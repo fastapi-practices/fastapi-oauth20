@@ -1,0 +1,12 @@
+__pycache__/
+.pytest_cache/
+.pdm.toml
+.pdm-python
+.pdm-build/
+.env
+.venv
+venv/
+.idea/
+.vscode/
+.ruff_cache/
+dist/
