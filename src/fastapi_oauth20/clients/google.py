@@ -8,11 +8,7 @@ AUTHORIZE_ENDPOINT = 'https://accounts.google.com/o/oauth2/v2/auth'
 ACCESS_TOKEN_ENDPOINT = 'https://oauth2.googleapis.com/token'
 REFRESH_TOKEN_ENDPOINT = ACCESS_TOKEN_ENDPOINT
 REVOKE_TOKEN_ENDPOINT = 'https://accounts.google.com/o/oauth2/revoke'
-DEFAULT_SCOPES = [
-    'OpenID',
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile',
-]
+DEFAULT_SCOPES = ['email', 'openid', 'profile']
 PROFILE_ENDPOINT = 'https://www.googleapis.com/oauth2/v1/userinfo'
 
 
@@ -33,7 +29,7 @@ class GoogleOAuth20(OAuth20Base):
         """Gets user info from Google"""
         headers = {'Authorization': f'Bearer {access_token}'}
         async with httpx.AsyncClient() as client:
-            response = await client.post(PROFILE_ENDPOINT, headers=headers)
+            response = await client.get(PROFILE_ENDPOINT, headers=headers)
             await self.raise_httpx_oauth20_errors(response)
 
         res = response.json()

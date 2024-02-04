@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from fastapi import Request
 
+from fastapi_oauth20.errors import RedirectURIError
 from fastapi_oauth20.oauth20 import OAuth20Base
 
 
@@ -17,9 +18,15 @@ class OAuth20:
         self.redirect_uri = redirect_uri
 
     async def __call__(
-        self, request: Request, code: str, state: str | None, code_verifier: str | None = None
+        self,
+        request: Request,
+        code: str,
+        state: str | None = None,
+        code_verifier: str | None = None,
     ) -> tuple[dict, str]:
         if self.redirect_uri is None:
+            if self.oauth_callback_route_name is None:
+                raise RedirectURIError('redirect_uri is required')
             self.redirect_uri = str(request.url_for(self.oauth_callback_route_name))
 
         access_token = await self.client.get_access_token(
