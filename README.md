@@ -1,6 +1,8 @@
 # fastapi_oauth20
 
-在 fastapi 中轻松集成 OAuth 2.0 客户端，only async support!
+在 fastapi 中轻松集成 OAuth 2.0 客户端
+
+全局异步，支持 python >= 3.10
 
 我们的目标是集成多个 CN 第三方客户端，敬请期待
 
