@@ -30,6 +30,10 @@ class OAuth20Base:
         self.oauth_callback_route_name = oauth_callback_route_name
         self.default_scopes = default_scopes
 
+        self.request_headers = {
+            'Accept': 'application/json',
+        }
+
     async def get_authorization_url(
         self,
         redirect_uri: str,
@@ -86,7 +90,11 @@ class OAuth20Base:
         if code_verifier:
             data.update({'code_verifier': code_verifier})
         async with httpx.AsyncClient() as client:
-            response = await client.post(self.access_token_endpoint, data=data)
+            response = await client.post(
+                self.access_token_endpoint,
+                data=data,
+                headers=self.request_headers,
+            )
             await self.raise_httpx_oauth20_errors(response)
 
             res = response.json()
@@ -104,7 +112,11 @@ class OAuth20Base:
             'grant_type': 'refresh_token',
         }
         async with httpx.AsyncClient() as client:
-            response = await client.post(self.refresh_token_endpoint, data=data)
+            response = await client.post(
+                self.refresh_token_endpoint,
+                data=data,
+                headers=self.request_headers,
+            )
             await self.raise_httpx_oauth20_errors(response)
 
             res = response.json()
@@ -122,7 +134,11 @@ class OAuth20Base:
             if token_type_hint is not None:
                 data.update({'token_type_hint': token_type_hint})
 
-            response = await client.post(self.revoke_token_endpoint, data=data)
+            response = await client.post(
+                self.revoke_token_endpoint,
+                data=data,
+                headers=self.request_headers,
+            )
 
             await self.raise_httpx_oauth20_errors(response)
 
