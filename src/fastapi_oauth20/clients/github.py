@@ -6,7 +6,7 @@ from fastapi_oauth20.oauth20 import OAuth20Base
 
 AUTHORIZE_ENDPOINT = 'https://github.com/login/oauth/authorize'
 ACCESS_TOKEN_ENDPOINT = 'https://github.com/login/oauth/access_token'
-DEFAULT_SCOPES = ['user user:email']
+DEFAULT_SCOPES = ['user', 'user:email']
 PROFILE_ENDPOINT = 'https://api.github.com/user'
 EMAILS_ENDPOINT = 'https://api.github.com/user/emails'
 
