@@ -21,6 +21,6 @@
 - [ ] 百度
 - [x] Gitee
 - [x] Github
-- [ ] 开源中国
+- [X] 开源中国
 - [ ] 阿里云
 - [ ] TestHome
