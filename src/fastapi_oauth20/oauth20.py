@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import abc
+
 from urllib.parse import urlencode, urljoin
 
 import httpx
@@ -126,7 +128,13 @@ class OAuth20Base:
 
     @staticmethod
     async def raise_httpx_oauth20_errors(response: httpx.Response) -> None:
+        """Raise HTTPXOAuth20Error if the response is invalid"""
         try:
             response.raise_for_status()
         except httpx.HTTPStatusError as e:
             raise HTTPXOAuth20Error(e) from e
+
+    @abc.abstractmethod
+    async def get_userinfo(self, access_token: str) -> dict:
+        """Get user info"""
+        ...
