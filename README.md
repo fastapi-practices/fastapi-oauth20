@@ -6,12 +6,11 @@
 
 我们的目标是集成多个 CN 第三方客户端，敬请期待
 
-感谢 [httpx_oauth](https://github.com/frankie567/httpx-oauth) 鼎力相助
-
 #### TODO:
 
 如果我们能够很容易获取测试客户端，对接将会很快发生
 
+- [ ] library tests
 - [x] Google
 - [ ] 微信
 - [ ] QQ
@@ -21,7 +20,7 @@
 - [ ] 微博
 - [ ] 百度
 - [x] Gitee
-- [ ] Github
+- [x] Github
 - [ ] 开源中国
 - [ ] 阿里云
 - [ ] TestHome
