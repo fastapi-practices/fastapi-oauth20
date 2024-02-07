@@ -3,9 +3,9 @@
 import uvicorn
 
 from fastapi import Depends, FastAPI
-from fastapi_oauth20.clients.google import GoogleOAuth20
-from fastapi_oauth20.integrations.fastapi import OAuth20
 from starlette.responses import PlainTextResponse
+
+from fastapi_oauth20 import FastAPIOAuth20, GoogleOAuth20
 
 app = FastAPI()
 
@@ -14,7 +14,7 @@ GOOGLE_CLIENT_SECRET = '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'
 GOOGLE_REDIRECT_URI = 'http://localhost:8000/auth/google'
 
 google_client = GoogleOAuth20(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET)
-oauth20 = OAuth20(google_client, GOOGLE_REDIRECT_URI)
+oauth20 = FastAPIOAuth20(google_client, GOOGLE_REDIRECT_URI)
 
 
 @app.get('/login/google')

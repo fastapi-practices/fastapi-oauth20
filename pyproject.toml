@@ -1,7 +1,9 @@
 [project]
 name = "fastapi_oauth20"
-version = "0.0.1"
-description = "FastAPI easily integrates with clients OAuth 2.0"
+description = "在 FastAPI 中异步授权 OAuth2 客户端"
+dynamic = [
+    "version",
+]
 authors = [
     { name = "Wu Clan", email = "jianhengwu0407@gmail.com" },
 ]
@@ -38,6 +40,7 @@ quote-style = "single"
 
 [tool.pdm]
 package-type = "library"
+version = { source = "file", path = "fastapi_oauth20/__init__.py" }
 
 [build-system]
 requires = ["pdm-backend"]
