@@ -7,6 +7,7 @@ from fastapi_oauth20.oauth20 import OAuth20Base
 AUTHORIZE_ENDPOINT = 'https://passport.feishu.cn/suite/passport/oauth/authorize'
 ACCESS_TOKEN_ENDPOINT = 'https://passport.feishu.cn/suite/passport/oauth/token'
 REFRESH_TOKEN_ENDPOINT = AUTHORIZE_ENDPOINT
+REVOKE_TOKEN_ENDPOINT = None
 DEFAULT_SCOPES = ['contact:user.employee_id:readonly', 'contact:user.base:readonly', 'contact:user.email:readonly']
 PROFILE_ENDPOINT = 'https://passport.feishu.cn/suite/passport/oauth/userinfo'
 
@@ -19,7 +20,7 @@ class FeiShuOAuth20(OAuth20Base):
             authorize_endpoint=AUTHORIZE_ENDPOINT,
             access_token_endpoint=ACCESS_TOKEN_ENDPOINT,
             refresh_token_endpoint=REFRESH_TOKEN_ENDPOINT,
-            revoke_token_endpoint=None,
+            revoke_token_endpoint=REVOKE_TOKEN_ENDPOINT,
             oauth_callback_route_name='feishu',
             default_scopes=DEFAULT_SCOPES,
         )

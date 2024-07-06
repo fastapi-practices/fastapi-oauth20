@@ -11,7 +11,7 @@ app = FastAPI()
 
 GOOGLE_CLIENT_ID = '1053650337583-ljnla4m1e5cg16erq3tld5vjflqh4bij.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = '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'
-GOOGLE_REDIRECT_URI = 'http://localhost:8000/auth/google'
+GOOGLE_REDIRECT_URI = 'http://localhost:8000/auth2/google'
 
 google_client = GoogleOAuth20(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET)
 oauth20 = FastAPIOAuth20(google_client, GOOGLE_REDIRECT_URI)
@@ -22,9 +22,9 @@ async def login_google():
     return await google_client.get_authorization_url(redirect_uri=GOOGLE_REDIRECT_URI)
 
 
-@app.get('/auth/google', response_model=None)
-async def auth_google(oauth: oauth20 = Depends()):
-    token, state = oauth
+@app.get('/auth2/google', response_model=None)
+async def auth2_google(oauth2: oauth20 = Depends()):
+    token, state = oauth2
     access_token = token['access_token']
     print(access_token)
     # do something

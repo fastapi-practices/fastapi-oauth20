@@ -53,8 +53,11 @@ order-by-type = true
 quote-style = "single"
 
 [tool.pdm]
-package-type = "library"
+distribution = true
 version = { source = "file", path = "fastapi_oauth20/__init__.py" }
+
+[tool.pdm.scripts]
+lint = "pre-commit run --all-files"
 
 [build-system]
 requires = ["pdm-backend"]
