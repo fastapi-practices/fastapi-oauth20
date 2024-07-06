@@ -25,6 +25,30 @@ class LinuxDoOAuth20(OAuth20Base):
             default_scopes=DEFAULT_SCOPES,
         )
 
+    async def get_access_token(self, code: str, redirect_uri: str, code_verifier: str | None = None) -> dict:
+        """Obtain the token based on the Linux do authorization method"""
+        data = {
+            'code': code,
+            'redirect_uri': redirect_uri,
+            'grant_type': 'authorization_code',
+        }
+
+        auth = httpx.BasicAuth(self.client_id, self.client_secret)
+
+        if code_verifier:
+            data.update({'code_verifier': code_verifier})
+        async with httpx.AsyncClient(auth=auth) as client:
+            response = await client.post(
+                self.access_token_endpoint,
+                data=data,
+                headers=self.request_headers,
+            )
+            await self.raise_httpx_oauth20_errors(response)
+
+            res = response.json()
+
+            return res
+
     async def get_userinfo(self, access_token: str) -> dict:
         """Get user info from Linux Do"""
         headers = {'Authorization': f'Bearer {access_token}'}
