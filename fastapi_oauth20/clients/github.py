@@ -6,9 +6,10 @@ from fastapi_oauth20.oauth20 import OAuth20Base
 
 AUTHORIZE_ENDPOINT = 'https://github.com/login/oauth/authorize'
 ACCESS_TOKEN_ENDPOINT = 'https://github.com/login/oauth/access_token'
+REFRESH_TOKEN_ENDPOINT = None
+REVOKE_TOKEN_ENDPOINT = None
 DEFAULT_SCOPES = ['user', 'user:email']
 PROFILE_ENDPOINT = 'https://api.github.com/user'
-EMAILS_ENDPOINT = 'https://api.github.com/user/emails'
 
 
 class GitHubOAuth20(OAuth20Base):
@@ -18,8 +19,8 @@ class GitHubOAuth20(OAuth20Base):
             client_secret=client_secret,
             authorize_endpoint=AUTHORIZE_ENDPOINT,
             access_token_endpoint=ACCESS_TOKEN_ENDPOINT,
-            refresh_token_endpoint=None,
-            revoke_token_endpoint=None,
+            refresh_token_endpoint=REFRESH_TOKEN_ENDPOINT,
+            revoke_token_endpoint=REVOKE_TOKEN_ENDPOINT,
             oauth_callback_route_name='github',
             default_scopes=DEFAULT_SCOPES,
         )
@@ -35,7 +36,7 @@ class GitHubOAuth20(OAuth20Base):
 
             email = res.get('email')
             if email is None:
-                response = await client.get(EMAILS_ENDPOINT)
+                response = await client.get(f'{PROFILE_ENDPOINT}/emails')
                 await self.raise_httpx_oauth20_errors(response)
 
                 emails = response.json()

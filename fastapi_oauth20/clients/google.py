@@ -26,7 +26,7 @@ class GoogleOAuth20(OAuth20Base):
         )
 
     async def get_userinfo(self, access_token: str) -> dict:
-        """Gets user info from Google"""
+        """Get user info from Google"""
         headers = {'Authorization': f'Bearer {access_token}'}
         async with httpx.AsyncClient() as client:
             response = await client.get(PROFILE_ENDPOINT, headers=headers)

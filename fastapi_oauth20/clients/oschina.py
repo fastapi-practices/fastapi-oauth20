@@ -7,6 +7,8 @@ from fastapi_oauth20.oauth20 import OAuth20Base
 AUTHORIZE_ENDPOINT = 'https://www.oschina.net/action/oauth2/authorize'
 ACCESS_TOKEN_ENDPOINT = 'https://www.oschina.net/action/openapi/token'
 REFRESH_TOKEN_ENDPOINT = ACCESS_TOKEN_ENDPOINT
+REVOKE_TOKEN_ENDPOINT = None
+DEFAULT_SCOPES = None
 PROFILE_ENDPOINT = 'https://www.oschina.net/action/openapi/user'
 
 
@@ -18,9 +20,9 @@ class OSChinaOAuth20(OAuth20Base):
             authorize_endpoint=AUTHORIZE_ENDPOINT,
             access_token_endpoint=ACCESS_TOKEN_ENDPOINT,
             refresh_token_endpoint=REFRESH_TOKEN_ENDPOINT,
-            revoke_token_endpoint=None,
+            revoke_token_endpoint=REVOKE_TOKEN_ENDPOINT,
             oauth_callback_route_name='oschina',
-            default_scopes=None,
+            default_scopes=DEFAULT_SCOPES,
         )
 
     async def get_userinfo(self, access_token: str) -> dict:
