@@ -30,7 +30,7 @@ classifiers = [
 homepage = "https://github.com/fastapi-practices/fastapi_oauth20"
 repository = "https://github.com/fastapi-practices/fastapi_oauth20"
 
-[tool.pdm.dev-dependencies]
+[tool.pdm.dependency-groups]
 lint = [
     "ruff>=0.9.9",
     "pre-commit>=4.1.0",
