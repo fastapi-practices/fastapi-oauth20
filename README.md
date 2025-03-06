@@ -27,4 +27,4 @@
 - [x] [Github](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
 - [X] [开源中国](https://www.oschina.net/openapi)
 - [ ] 阿里云
-- [ ] [Linux Do](https://connect.linux.do/)
+- [x] [Linux Do](https://connect.linux.do/)

@@ -1,6 +1,6 @@
 [project]
 name = "fastapi_oauth20"
-description = "在 FastAPI 中异步授权 OAuth2 客户端"
+description = "在 FastAPI 中异步授权 OAuth 2.0 客户端"
 dynamic = [
     "version",
 ]
@@ -21,6 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
@@ -31,11 +32,8 @@ repository = "https://github.com/fastapi-practices/fastapi_oauth20"
 
 [tool.pdm.dev-dependencies]
 lint = [
-    "ruff>=0.2.0",
-    "pre-commit>=3.6.0",
-]
-asgi = [
-    "uvicorn>=0.27.0.post1",
+    "ruff>=0.9.9",
+    "pre-commit>=4.1.0",
 ]
 
 [tool.ruff]

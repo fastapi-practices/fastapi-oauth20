@@ -1,20 +1,21 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-toml
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.5.0
+    rev: v0.9.9
     hooks:
       - id: ruff
         args:
           - '--fix'
+          - '--unsafe-fixes'
       - id: ruff-format
 
   - repo: https://github.com/pdm-project/pdm
-    rev: 2.16.1
+    rev: 2.22.3
     hooks:
       - id: pdm-lock-check
