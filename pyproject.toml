@@ -60,3 +60,8 @@ lint = "pre-commit run --all-files"
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
+
+[dependency-groups]
+docs = [
+    "mkdocs-material>=9.6.7",
+]

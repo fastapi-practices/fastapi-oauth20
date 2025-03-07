@@ -1,0 +1,74 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+site_name: FastAPI OAuth 2.0
+site_description: 在 FastAPI 中异步授权 OAuth 2.0 客户端
+site_url: https://wu-clan.github.io/fastapi-oauth20
+site_author: Wu Clan
+repo_name: fastapi-oauth20
+repo_url: https://github.com/wu-clan/fastapi-oauth20
+nav:
+  - Home:
+      - 主页: index.md
+      - 集成状态: integration.md
+  - Install: install.md
+  - Explanation: explanation.md
+  - Usage: usage.md
+  - Advanced: advanced.md
+  - Changelog: changelog.md
+theme:
+  name: material
+  font:
+    code: Roboto Mono
+  palette:
+    - media: '(prefers-color-scheme)'
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: '(prefers-color-scheme: light)'
+      scheme: default
+      primary: pink
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: '(prefers-color-scheme: dark)'
+      scheme: slate
+      primary: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  features:
+    - content.code.annotate
+    - content.code.select
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.path
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - toc.follow
+plugins:
+  - search
+markdown_extensions:
+  - toc:
+      permalink: true
+  - tables
+  - admonition
+  - attr_list
+  - def_list
+  - md_in_html
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.tasklist:
+      custom_checkbox: true
