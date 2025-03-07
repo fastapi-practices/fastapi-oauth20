@@ -6,7 +6,7 @@ from fastapi_oauth20.errors import RedirectURIError
 from fastapi_oauth20.oauth20 import OAuth20Base
 
 
-class OAuth20:
+class FastAPIOAuth20:
     def __init__(
         self,
         client: OAuth20Base,

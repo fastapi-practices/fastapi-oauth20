@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    tags:
-      - '**'
   pull_request:
 
 jobs:
@@ -17,10 +15,10 @@ jobs:
         python-version: [ '3.10', '3.11', '3.12' ]
       fail-fast: false
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup PDM
-        uses: pdm-project/setup-pdm@v3
+        uses: pdm-project/setup-pdm@v4
         with:
           python-version: ${{ matrix.python-version }}
 
