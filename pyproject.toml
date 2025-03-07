@@ -9,7 +9,6 @@ authors = [
 ]
 dependencies = [
     "httpx>=0.18.0",
-    "fastapi>=0.100.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -30,7 +29,12 @@ classifiers = [
 homepage = "https://github.com/fastapi-practices/fastapi_oauth20"
 repository = "https://github.com/fastapi-practices/fastapi_oauth20"
 
-[tool.pdm.dependency-groups]
+[dependency-groups]
+dev = [
+    "pytest>=8.1.1",
+    "pytest-asyncio>=0.23.6",
+    "fastapi>=0.100.0",
+]
 lint = [
     "ruff>=0.9.9",
     "pre-commit>=4.1.0",
@@ -60,8 +64,3 @@ lint = "pre-commit run --all-files"
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
-
-[dependency-groups]
-docs = [
-    "mkdocs-material>=9.6.7",
-]
