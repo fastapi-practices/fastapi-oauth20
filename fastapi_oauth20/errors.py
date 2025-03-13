@@ -1,30 +1,57 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import httpx
 
 
 class FastAPIOAuth20BaseError(Exception):
-    pass
+    """The fastapi-oauth20 base error."""
+
+    msg: str
+
+    def __init__(self, msg: str) -> None:
+        self.msg = msg
+        super().__init__(msg)
 
 
-class HTTPXOAuth20Error(FastAPIOAuth20BaseError):
+class OAuth20RequestError(FastAPIOAuth20BaseError):
+    """OAuth2 httpx request error"""
+
+    def __init__(self, msg: str, response: httpx.Response | None = None) -> None:
+        self.response = response
+        super().__init__(msg)
+
+
+class HTTPXOAuth20Error(OAuth20RequestError):
     """OAuth2 error for httpx raise for status"""
 
     pass
 
 
-class RefreshTokenError(FastAPIOAuth20BaseError):
-    """Refresh token error if the refresh endpoint is missing"""
+class AccessTokenError(OAuth20RequestError):
+    """Error raised when get access token fail."""
 
     pass
 
 
-class RevokeTokenError(FastAPIOAuth20BaseError):
-    """Revoke token error if the revoke endpoint is missing"""
+class RefreshTokenError(OAuth20RequestError):
+    """Refresh token error when refresh token fail."""
 
     pass
 
 
-class RedirectURIError(FastAPIOAuth20BaseError):
+class RevokeTokenError(OAuth20RequestError):
+    """Revoke token error when revoke token fail."""
+
+    pass
+
+
+class GetUserInfoError(OAuth20RequestError):
+    """Get user info error when get user info fail."""
+
+    pass
+
+
+class RedirectURIError(OAuth20RequestError):
     """Redirect URI set error"""
 
     pass
