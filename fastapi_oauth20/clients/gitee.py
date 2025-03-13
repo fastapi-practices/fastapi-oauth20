@@ -14,7 +14,6 @@ class GiteeOAuth20(OAuth20Base):
             authorize_endpoint='https://gitee.com/oauth/authorize',
             access_token_endpoint='https://gitee.com/oauth/token',
             refresh_token_endpoint='https://gitee.com/oauth/token',
-            oauth_callback_route_name='gitee',
             default_scopes=['user_info'],
         )
 

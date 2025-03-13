@@ -15,7 +15,6 @@ class GoogleOAuth20(OAuth20Base):
             access_token_endpoint='https://oauth2.googleapis.com/token',
             refresh_token_endpoint='https://oauth2.googleapis.com/token',
             revoke_token_endpoint='https://accounts.google.com/o/oauth2/revoke',
-            oauth_callback_route_name='google',
             default_scopes=['email', 'openid', 'profile'],
         )
 

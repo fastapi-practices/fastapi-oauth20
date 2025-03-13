@@ -3,8 +3,8 @@
 import httpx
 
 
-class FastAPIOAuth20BaseError(Exception):
-    """The fastapi-oauth20 base error."""
+class OAuth20BaseError(Exception):
+    """The oauth2 base error."""
 
     msg: str
 
@@ -13,7 +13,7 @@ class FastAPIOAuth20BaseError(Exception):
         super().__init__(msg)
 
 
-class OAuth20RequestError(FastAPIOAuth20BaseError):
+class OAuth20RequestError(OAuth20BaseError):
     """OAuth2 httpx request error"""
 
     def __init__(self, msg: str, response: httpx.Response | None = None) -> None:

@@ -14,7 +14,6 @@ class FeiShuOAuth20(OAuth20Base):
             authorize_endpoint='https://passport.feishu.cn/suite/passport/oauth/authorize',
             access_token_endpoint='https://passport.feishu.cn/suite/passport/oauth/token',
             refresh_token_endpoint='https://passport.feishu.cn/suite/passport/oauth/authorize',
-            oauth_callback_route_name='feishu',
             default_scopes=[
                 'contact:user.employee_id:readonly',
                 'contact:user.base:readonly',
