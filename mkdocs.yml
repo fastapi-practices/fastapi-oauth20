@@ -6,14 +6,13 @@ site_author: Wu Clan
 repo_name: fastapi-oauth20
 repo_url: https://github.com/wu-clan/fastapi-oauth20
 nav:
-  - Home:
-      - 主页: index.md
-      - 集成状态: integration.md
-  - Install: install.md
-  - Explanation: explanation.md
-  - Usage: usage.md
-  - Advanced: advanced.md
-  - Changelog: changelog.md
+  - 主页: index.md
+  - 集成状态: integration.md
+  - 安装: install.md
+  - 名词解释: explanation.md
+  - 用法: usage.md
+  - 高级用法: advanced.md
+  - 变更日志: changelog.md
 theme:
   name: material
   font:
@@ -42,7 +41,6 @@ theme:
     - navigation.instant.progress
     - navigation.path
     - navigation.tracking
-    - navigation.tabs
     - navigation.tabs.sticky
     - navigation.top
     - navigation.footer
@@ -58,9 +56,16 @@ markdown_extensions:
   - attr_list
   - def_list
   - md_in_html
-  - pymdownx.snippets
+  - admonition
+  - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.snippets
   - pymdownx.inlinehilite
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
