@@ -2,14 +2,8 @@
 # -*- coding: utf-8 -*-
 import httpx
 
+from fastapi_oauth20.errors import GetUserInfoError
 from fastapi_oauth20.oauth20 import OAuth20Base
-
-AUTHORIZE_ENDPOINT = 'https://github.com/login/oauth/authorize'
-ACCESS_TOKEN_ENDPOINT = 'https://github.com/login/oauth/access_token'
-REFRESH_TOKEN_ENDPOINT = None
-REVOKE_TOKEN_ENDPOINT = None
-DEFAULT_SCOPES = ['user', 'user:email']
-PROFILE_ENDPOINT = 'https://api.github.com/user'
 
 
 class GitHubOAuth20(OAuth20Base):
@@ -17,31 +11,26 @@ class GitHubOAuth20(OAuth20Base):
         super().__init__(
             client_id=client_id,
             client_secret=client_secret,
-            authorize_endpoint=AUTHORIZE_ENDPOINT,
-            access_token_endpoint=ACCESS_TOKEN_ENDPOINT,
-            refresh_token_endpoint=REFRESH_TOKEN_ENDPOINT,
-            revoke_token_endpoint=REVOKE_TOKEN_ENDPOINT,
+            authorize_endpoint='https://github.com/login/oauth/authorize',
+            access_token_endpoint='https://github.com/login/oauth/access_token',
             oauth_callback_route_name='github',
-            default_scopes=DEFAULT_SCOPES,
+            default_scopes=['user', 'user:email'],
         )
 
     async def get_userinfo(self, access_token: str) -> dict:
         """Get user info from GitHub"""
         headers = {'Authorization': f'Bearer {access_token}'}
         async with httpx.AsyncClient(headers=headers) as client:
-            response = await client.get(PROFILE_ENDPOINT)
-            await self.raise_httpx_oauth20_errors(response)
+            response = await client.get('https://api.github.com/user')
+            self.raise_httpx_oauth20_errors(response)
+            result = self.get_json_result(response, err_class=GetUserInfoError)
 
-            res = response.json()
-
-            email = res.get('email')
+            email = result.get('email')
             if email is None:
-                response = await client.get(f'{PROFILE_ENDPOINT}/emails')
-                await self.raise_httpx_oauth20_errors(response)
-
-                emails = response.json()
-
+                response = await client.get('https://api.github.com/user/emails')
+                self.raise_httpx_oauth20_errors(response)
+                emails = self.get_json_result(response, err_class=GetUserInfoError)
                 email = next((email['email'] for email in emails if email.get('primary')), emails[0]['email'])
-                res['email'] = email
+                result['email'] = email
 
-            return res
+            return result
