@@ -1,5 +1,5 @@
 [project]
-name = "fastapi_oauth20"
+name = "fastapi-oauth20"
 description = "在 FastAPI 中异步授权 OAuth 2.0 客户端"
 dynamic = [
     "version",

@@ -13,7 +13,6 @@ class GitHubOAuth20(OAuth20Base):
             client_secret=client_secret,
             authorize_endpoint='https://github.com/login/oauth/authorize',
             access_token_endpoint='https://github.com/login/oauth/access_token',
-            oauth_callback_route_name='github',
             default_scopes=['user', 'user:email'],
         )
 

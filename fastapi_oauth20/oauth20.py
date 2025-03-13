@@ -27,7 +27,6 @@ class OAuth20Base:
         access_token_endpoint: str,
         refresh_token_endpoint: str | None = None,
         revoke_token_endpoint: str | None = None,
-        oauth_callback_route_name: str = 'oauth20',
         default_scopes: list[str] | None = None,
         token_endpoint_basic_auth: bool = False,
         revoke_token_endpoint_basic_auth: bool = False,
@@ -41,7 +40,6 @@ class OAuth20Base:
         :param access_token_endpoint: The access token endpoint URL.
         :param refresh_token_endpoint: The refresh token endpoint URL.
         :param revoke_token_endpoint: The revoke token endpoint URL.
-        :param oauth_callback_route_name:
         :param default_scopes:
         :param token_endpoint_basic_auth:
         :param revoke_token_endpoint_basic_auth:
@@ -52,7 +50,6 @@ class OAuth20Base:
         self.access_token_endpoint = access_token_endpoint
         self.refresh_token_endpoint = refresh_token_endpoint
         self.revoke_token_endpoint = revoke_token_endpoint
-        self.oauth_callback_route_name = oauth_callback_route_name
         self.default_scopes = default_scopes
         self.token_endpoint_basic_auth = token_endpoint_basic_auth
         self.revoke_token_endpoint_basic_auth = revoke_token_endpoint_basic_auth

@@ -14,7 +14,6 @@ class OSChinaOAuth20(OAuth20Base):
             authorize_endpoint='https://www.oschina.net/action/oauth2/authorize',
             access_token_endpoint='https://www.oschina.net/action/openapi/token',
             refresh_token_endpoint='https://www.oschina.net/action/openapi/token',
-            oauth_callback_route_name='oschina',
         )
 
     async def get_userinfo(self, access_token: str) -> dict:

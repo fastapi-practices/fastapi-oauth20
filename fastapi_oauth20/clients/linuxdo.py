@@ -14,7 +14,6 @@ class LinuxDoOAuth20(OAuth20Base):
             authorize_endpoint='https://connect.linux.do/oauth2/authorize',
             access_token_endpoint='https://connect.linux.do/oauth2/token',
             refresh_token_endpoint='https://connect.linux.do/oauth2/token',
-            oauth_callback_route_name='linuxdo',
             token_endpoint_basic_auth=True,
         )
 
