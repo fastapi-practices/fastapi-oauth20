@@ -7,20 +7,20 @@
 
 ## 安装
 
-=== ":simple-piped: pip"
+=== ":simple-python: pip"
 
     ```sh
     pip install fastapi-oauth20
-    ```
-
-=== ":simple-pdm: pdm"
-
-    ```sh
-    pdm add fastapi-oauth20
     ```
 
 === ":simple-uv: uv"
 
     ```sh
     uv add fastapi-oauth20
+    ```
+
+=== ":simple-pdm: pdm"
+
+    ```sh
+    pdm add fastapi-oauth20
     ```
