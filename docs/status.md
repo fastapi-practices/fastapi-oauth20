@@ -15,9 +15,9 @@
 
 ## TODO
 
-- [ ] [微信小程序](clients/wechat_open)
-- [ ] [微信开放平台](clients/wechat_mp)
-- [ ] [企业微信二维码登录](clients/wechat_work)
+- [ ] [微信小程序](clients/wechat_open.md)
+- [ ] [微信开放平台](clients/wechat_mp.md)
+- [ ] [企业微信二维码登录](clients/wechat_work.md)
 - [ ] [钉钉](clients/dingding.md)
 - [ ] [QQ](clients/qq.md)
 - [ ] [微博](clients/weibo.md)
