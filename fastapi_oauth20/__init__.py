@@ -8,4 +8,4 @@ from .clients.linuxdo import LinuxDoOAuth20 as LinuxDoOAuth20
 from .clients.oschina import OSChinaOAuth20 as OSChinaOAuth20
 from .integrations.fastapi import FastAPIOAuth20 as FastAPIOAuth20
 
-__version__ = '0.0.1a2'
+__version__ = '0.0.1'
