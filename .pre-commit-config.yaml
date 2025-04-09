@@ -6,7 +6,7 @@ repos:
       - id: check-toml
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.9.9
+    rev: v0.11.4
     hooks:
       - id: ruff
         args:
@@ -15,6 +15,6 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/pdm-project/pdm
-    rev: 2.22.3
+    rev: 2.23.0
     hooks:
       - id: pdm-lock-check

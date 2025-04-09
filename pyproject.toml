@@ -37,7 +37,6 @@ dev = [
     "respx>=0.22.0",
 ]
 lint = [
-    "ruff>=0.9.9",
     "pre-commit>=4.1.0",
 ]
 
