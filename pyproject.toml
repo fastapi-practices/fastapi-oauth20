@@ -1,18 +1,13 @@
 [project]
 name = "fastapi-oauth20"
 description = "在 FastAPI 中异步授权 OAuth 2.0 客户端"
-dynamic = [
-    "version",
-]
 authors = [
     { name = "Wu Clan", email = "jianhengwu0407@gmail.com" },
 ]
-dependencies = [
-    "httpx>=0.18.0",
-]
-requires-python = ">=3.10"
 readme = "README.md"
 license = { text = "MIT" }
+requires-python = ">=3.10"
+dynamic = ['version']
 classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
@@ -21,8 +16,12 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Libraries",
     "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "httpx>=0.18.0",
 ]
 
 [project.urls]
@@ -31,18 +30,28 @@ repository = "https://github.com/fastapi-practices/fastapi_oauth20"
 
 [dependency-groups]
 dev = [
-    "pytest>=8.1.1",
-    "pytest-asyncio>=0.23.6",
-    "fastapi>=0.100.0",
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.2.0",
+    "fastapi>=0.119.0",
     "respx>=0.22.0",
+    "ty>=0.0.1a23",
 ]
 lint = [
-    "pre-commit>=4.1.0",
+    "pre-commit>=4.3.0",
 ]
+docs = [
+    "mkdocs-material==9.6.7",
+    "mkdocs-glightbox==0.4.0"
+]
+
+[tool.uv]
+python-downloads = "manual"
+default-groups = ["dev", "lint"]
 
 [tool.ruff]
 line-length = 120
-cache-dir = "./.ruff_cache"
+unsafe-fixes = true
+target-version = "py310"
 
 [tool.ruff.lint]
 extend-select = ["I"]
@@ -58,9 +67,12 @@ quote-style = "single"
 distribution = true
 version = { source = "file", path = "fastapi_oauth20/__init__.py" }
 
-[tool.pdm.scripts]
-lint = "pre-commit run --all-files"
+[tool.hatch.build.targets.wheel]
+packages = ["fastapi_oauth20"]
+
+[tool.hatch.version]
+path = "fastapi_oauth20/__init__.py"
 
 [build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

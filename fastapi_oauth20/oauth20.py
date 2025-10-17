@@ -3,7 +3,7 @@
 import abc
 import json
 
-from typing import Literal, cast
+from typing import Any, Literal, cast
 from urllib.parse import urlencode
 
 import httpx
@@ -102,7 +102,7 @@ class OAuth20Base:
 
         return f'{self.authorize_endpoint}?{urlencode(params)}'
 
-    async def get_access_token(self, code: str, redirect_uri: str, code_verifier: str | None = None) -> dict:
+    async def get_access_token(self, code: str, redirect_uri: str, code_verifier: str | None = None) -> dict[str, Any]:
         """
         Get access token for given.
 
@@ -136,7 +136,7 @@ class OAuth20Base:
             result = self.get_json_result(response, err_class=AccessTokenError)
             return result
 
-    async def refresh_token(self, refresh_token: str) -> dict:
+    async def refresh_token(self, refresh_token: str) -> dict[str, Any]:
         """
         Get new access token by refresh token.
 
@@ -202,15 +202,15 @@ class OAuth20Base:
             raise HTTPXOAuth20Error(str(e)) from e
 
     @staticmethod
-    def get_json_result(response: httpx.Response, *, err_class: type[OAuth20RequestError]) -> dict:
+    def get_json_result(response: httpx.Response, *, err_class: type[OAuth20RequestError]) -> dict[str, Any]:
         """Get response json"""
         try:
-            return cast(dict, response.json())
-        except json.decoder.JSONDecodeError as e:
+            return cast(dict[str, Any], response.json())
+        except json.JSONDecodeError as e:
             raise err_class('Result serialization failed.', response) from e
 
     @abc.abstractmethod
-    async def get_userinfo(self, access_token: str) -> dict:
+    async def get_userinfo(self, access_token: str) -> dict[str, Any]:
         """
         Get user info from the API provider
 
