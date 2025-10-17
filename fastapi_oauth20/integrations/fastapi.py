@@ -53,7 +53,7 @@ class FastAPIOAuth20:
         state: str | None = None,
         code_verifier: str | None = None,
         error: str | None = None,
-    ) -> tuple[dict, str]:
+    ) -> tuple[dict[str, Any], str | None]:
         if code is None or error is not None:
             raise OAuth20AuthorizeCallbackError(
                 status_code=400,
