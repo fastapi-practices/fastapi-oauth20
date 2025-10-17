@@ -8,3 +8,17 @@
 在 FastAPI 中异步授权 OAuth 2.0 客户端
 
 我们的目标是集成多个 CN 第三方客户端
+
+## Download
+
+```shell
+pip install fastapi_oauth20
+```
+
+## Docs
+
+[fastapi oauth20](https://fastapi-practices.github.io/fastapi-oauth20/)
+
+## Sponsor
+
+如果此项目能够帮助到你，你可以赞助作者一些咖啡豆表示鼓励：[:coffee: Sponsor :coffee:](https://wu-clan.github.io/sponsor/)
