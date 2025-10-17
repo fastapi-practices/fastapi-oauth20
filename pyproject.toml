@@ -51,6 +51,7 @@ default-groups = ["dev", "lint"]
 [tool.ruff]
 line-length = 120
 unsafe-fixes = true
+target-version = "py310"
 
 [tool.ruff.lint]
 extend-select = ["I"]
