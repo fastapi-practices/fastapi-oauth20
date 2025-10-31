@@ -7,7 +7,15 @@ from fastapi_oauth20.oauth20 import OAuth20Base
 
 
 class GoogleOAuth20(OAuth20Base):
+    """Google OAuth2 client implementation."""
+
     def __init__(self, client_id: str, client_secret: str):
+        """
+        Initialize Google OAuth2 client.
+
+        :param client_id: Google OAuth 2.0 client ID from Google Cloud Console.
+        :param client_secret: Google OAuth 2.0 client secret from Google Cloud Console.
+        """
         super().__init__(
             client_id=client_id,
             client_secret=client_secret,
@@ -19,7 +27,12 @@ class GoogleOAuth20(OAuth20Base):
         )
 
     async def get_userinfo(self, access_token: str) -> dict:
-        """Get user info from Google"""
+        """
+        Retrieve user information from Google OAuth2 API.
+
+        :param access_token: Valid Google access token with appropriate scopes.
+        :return:
+        """
         headers = {'Authorization': f'Bearer {access_token}'}
         async with httpx.AsyncClient() as client:
             response = await client.get('https://www.googleapis.com/oauth2/v1/userinfo', headers=headers)

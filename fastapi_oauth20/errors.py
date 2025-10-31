@@ -4,54 +4,65 @@ import httpx
 
 
 class OAuth20BaseError(Exception):
-    """The oauth2 base error."""
+    """Base exception class for all OAuth2-related errors."""
 
     msg: str
 
     def __init__(self, msg: str) -> None:
+        """
+        Initialize base OAuth2 error.
+
+        :param msg: Human-readable error message describing the OAuth2 error.
+        """
         self.msg = msg
         super().__init__(msg)
 
 
 class OAuth20RequestError(OAuth20BaseError):
-    """OAuth2 httpx request error"""
+    """Base exception for OAuth2 HTTP request errors."""
 
     def __init__(self, msg: str, response: httpx.Response | None = None) -> None:
+        """
+        Initialize OAuth2 request error.
+
+        :param msg: Human-readable error message describing the request error.
+        :param response: The HTTP response object that caused the error (if available).
+        """
         self.response = response
         super().__init__(msg)
 
 
 class HTTPXOAuth20Error(OAuth20RequestError):
-    """OAuth2 error for httpx raise for status"""
+    """Exception raised when httpx raises an HTTP status error."""
 
     pass
 
 
 class AccessTokenError(OAuth20RequestError):
-    """Error raised when get access token fail."""
+    """Exception raised when access token exchange fails."""
 
     pass
 
 
 class RefreshTokenError(OAuth20RequestError):
-    """Refresh token error when refresh token fail."""
+    """Exception raised when refresh token operation fails."""
 
     pass
 
 
 class RevokeTokenError(OAuth20RequestError):
-    """Revoke token error when revoke token fail."""
+    """Exception raised when token revocation fails."""
 
     pass
 
 
 class GetUserInfoError(OAuth20RequestError):
-    """Get user info error when get user info fail."""
+    """Exception raised when user info retrieval fails."""
 
     pass
 
 
 class RedirectURIError(OAuth20RequestError):
-    """Redirect URI set error"""
+    """Exception raised for redirect URI configuration errors."""
 
     pass

@@ -7,7 +7,15 @@ from fastapi_oauth20.oauth20 import OAuth20Base
 
 
 class LinuxDoOAuth20(OAuth20Base):
+    """Linux.do OAuth2 client implementation."""
+
     def __init__(self, client_id: str, client_secret: str):
+        """
+        Initialize Linux.do OAuth2 client.
+
+        :param client_id: Linux.do OAuth application client ID.
+        :param client_secret: Linux.do OAuth application client secret.
+        """
         super().__init__(
             client_id=client_id,
             client_secret=client_secret,
@@ -18,7 +26,12 @@ class LinuxDoOAuth20(OAuth20Base):
         )
 
     async def get_userinfo(self, access_token: str) -> dict:
-        """Get user info from Linux Do"""
+        """
+        Retrieve user information from Linux.do API.
+
+        :param access_token: Valid Linux.do access token.
+        :return:
+        """
         headers = {'Authorization': f'Bearer {access_token}'}
         async with httpx.AsyncClient() as client:
             response = await client.get('https://connect.linux.do/api/user', headers=headers)

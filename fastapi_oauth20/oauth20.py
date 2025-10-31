@@ -33,17 +33,17 @@ class OAuth20Base(ABC):
         revoke_token_endpoint_basic_auth: bool = False,
     ):
         """
-        Base OAuth2 client.
+        Base OAuth2 client implementing the OAuth 2.0 authorization framework.
 
         :param client_id: The client ID provided by the OAuth2 provider.
         :param client_secret: The client secret provided by the OAuth2 provider.
-        :param authorize_endpoint: The authorization endpoint URL.
-        :param access_token_endpoint: The access token endpoint URL.
-        :param refresh_token_endpoint: The refresh token endpoint URL.
-        :param revoke_token_endpoint: The revoke token endpoint URL.
-        :param default_scopes:
-        :param token_endpoint_basic_auth:
-        :param revoke_token_endpoint_basic_auth:
+        :param authorize_endpoint: The authorization endpoint URL where users are redirected to grant access.
+        :param access_token_endpoint: The token endpoint URL for exchanging authorization codes for access tokens.
+        :param refresh_token_endpoint: The token endpoint URL for refreshing expired access tokens using refresh tokens.
+        :param revoke_token_endpoint: The endpoint URL for revoking access tokens or refresh tokens.
+        :param default_scopes: Default list of OAuth scopes to request if none are specified.
+        :param token_endpoint_basic_auth: Whether to use HTTP Basic Authentication for token endpoint requests.
+        :param revoke_token_endpoint_basic_auth: Whether to use HTTP Basic Authentication for revoke endpoint requests.
         """
         self.client_id = client_id
         self.client_secret = client_secret
@@ -69,14 +69,14 @@ class OAuth20Base(ABC):
         **kwargs,
     ) -> str:
         """
-        Get authorization url for given.
+        Generate OAuth2 authorization URL for redirecting users to grant access.
 
-        :param redirect_uri: redirected after authorization.
-        :param state: An opaque value used by the client to maintain state between the request and the callback.
-        :param scope: The scopes to be requested.
-        :param code_challenge: [PKCE](https://datatracker.ietf.org/doc/html/rfc7636) code challenge.
-        :param code_challenge_method: [PKCE](https://datatracker.ietf.org/doc/html/rfc7636) code challenge method.
-        :param kwargs: Additional arguments passed to the OAuth2 client.
+        :param redirect_uri: The URL where the OAuth2 provider will redirect after authorization.
+        :param state: An opaque value used by the client to maintain state between the request and callback, preventing CSRF attacks.
+        :param scope: The list of OAuth scopes to request. If None, uses default_scopes from initialization.
+        :param code_challenge: PKCE code challenge generated from code_verifier using the specified method.
+        :param code_challenge_method: PKCE code challenge method, either 'plain' or 'S256' (recommended).
+        :param kwargs: Additional query parameters to include in the authorization URL.
         :return:
         """
         params = {
@@ -105,11 +105,11 @@ class OAuth20Base(ABC):
 
     async def get_access_token(self, code: str, redirect_uri: str, code_verifier: str | None = None) -> dict[str, Any]:
         """
-        Get access token for given.
+        Exchange authorization code for access token.
 
-        :param code: The authorization code.
-        :param redirect_uri: redirect uri after authorization.
-        :param code_verifier: the code verifier for the [PKCE](https://datatracker.ietf.org/doc/html/rfc7636).
+        :param code: The authorization code received from the OAuth2 provider callback.
+        :param redirect_uri: The exact redirect URI used in the authorization request (must match).
+        :param code_verifier: The PKCE code verifier used to generate the code challenge (required if PKCE was used).
         :return:
         """
         data = {
@@ -139,9 +139,9 @@ class OAuth20Base(ABC):
 
     async def refresh_token(self, refresh_token: str) -> dict[str, Any]:
         """
-        Get new access token by refresh token.
+        Refresh an access token using a refresh token.
 
-        :param refresh_token: The refresh token.
+        :param refresh_token: The refresh token received from the initial token exchange.
         :return:
         """
         if self.refresh_token_endpoint is None:
@@ -170,10 +170,10 @@ class OAuth20Base(ABC):
 
     async def revoke_token(self, token: str, token_type_hint: str | None = None) -> None:
         """
-        Revoke a token.
+        Revoke an access token or refresh token.
 
-        :param token: A token or refresh token to revoke.
-        :param token_type_hint: Usually either `token` or `refresh_token`.
+        :param token: The access token or refresh token to revoke.
+        :param token_type_hint: Optional hint to the server about the token type ('access_token' or 'refresh_token').
         :return:
         """
         if self.revoke_token_endpoint is None:
@@ -194,7 +194,12 @@ class OAuth20Base(ABC):
 
     @staticmethod
     def raise_httpx_oauth20_errors(response: httpx.Response) -> None:
-        """Raise HTTPXOAuth20Error if the response is invalid"""
+        """
+        Check HTTP response and raise appropriate OAuth2 errors for invalid responses.
+
+        :param response: The HTTP response object to validate.
+        :return:
+        """
         try:
             response.raise_for_status()
         except httpx.HTTPStatusError as e:
@@ -204,7 +209,13 @@ class OAuth20Base(ABC):
 
     @staticmethod
     def get_json_result(response: httpx.Response, *, err_class: type[OAuth20RequestError]) -> dict[str, Any]:
-        """Get response json"""
+        """
+        Parse JSON response and handle JSON decoding errors.
+
+        :param response: The HTTP response object containing JSON data.
+        :param err_class: The specific OAuth2RequestError subclass to raise on JSON parsing failure.
+        :return:
+        """
         try:
             return cast(dict[str, Any], response.json())
         except json.JSONDecodeError as e:
@@ -213,9 +224,9 @@ class OAuth20Base(ABC):
     @abc.abstractmethod
     async def get_userinfo(self, access_token: str) -> dict[str, Any]:
         """
-        Get user info from the API provider
+        Retrieve user information from the OAuth2 provider.
 
-        :param access_token: The access token.
+        :param access_token: Valid access token to authenticate the request to the provider's user info endpoint.
         :return:
         """
         raise NotImplementedError()

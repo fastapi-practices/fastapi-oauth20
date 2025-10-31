@@ -7,7 +7,15 @@ from fastapi_oauth20.oauth20 import OAuth20Base
 
 
 class GitHubOAuth20(OAuth20Base):
+    """GitHub OAuth2 client implementation."""
+
     def __init__(self, client_id: str, client_secret: str):
+        """
+        Initialize GitHub OAuth2 client.
+
+        :param client_id: GitHub OAuth App client ID.
+        :param client_secret: GitHub OAuth App client secret.
+        """
         super().__init__(
             client_id=client_id,
             client_secret=client_secret,
@@ -17,7 +25,12 @@ class GitHubOAuth20(OAuth20Base):
         )
 
     async def get_userinfo(self, access_token: str) -> dict:
-        """Get user info from GitHub"""
+        """
+        Retrieve user information from GitHub API.
+
+        :param access_token: Valid GitHub access token with appropriate scopes.
+        :return:
+        """
         headers = {'Authorization': f'Bearer {access_token}'}
         async with httpx.AsyncClient(headers=headers) as client:
             response = await client.get('https://api.github.com/user')
