@@ -3,6 +3,7 @@
 import abc
 import json
 
+from abc import ABC
 from typing import Any, Literal, cast
 from urllib.parse import urlencode
 
@@ -17,7 +18,7 @@ from fastapi_oauth20.errors import (
 )
 
 
-class OAuth20Base:
+class OAuth20Base(ABC):
     def __init__(
         self,
         client_id: str,
