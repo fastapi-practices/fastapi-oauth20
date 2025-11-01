@@ -7,5 +7,6 @@ from .clients.google import GoogleOAuth20 as GoogleOAuth20
 from .clients.linuxdo import LinuxDoOAuth20 as LinuxDoOAuth20
 from .clients.oschina import OSChinaOAuth20 as OSChinaOAuth20
 from .integrations.fastapi import FastAPIOAuth20 as FastAPIOAuth20
+from .integrations.fastapi import OAuth20AuthorizeCallbackError as OAuth20AuthorizeCallbackError
 
 __version__ = '0.0.1'
