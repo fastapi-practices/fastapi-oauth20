@@ -30,7 +30,7 @@ FastAPI 异常处理程序会自动对其进行处理。您可以通过为 `OAut
 ```python
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from fastapi_oauth20.integrations.fastapi import OAuth20AuthorizeCallbackError
+from fastapi_oauth20.callback import OAuth20AuthorizeCallbackError
 
 app = FastAPI()
 
