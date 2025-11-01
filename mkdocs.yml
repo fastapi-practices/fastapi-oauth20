@@ -10,7 +10,6 @@ nav:
   - 安装: install.md
   - 名词解释: explanation.md
   - 用法: usage.md
-  - 高级用法: advanced.md
   - 集成:
       - FastAPI: fastapi.md
   - 客户端状态: status.md

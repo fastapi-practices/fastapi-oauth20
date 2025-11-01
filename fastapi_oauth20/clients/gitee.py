@@ -7,7 +7,15 @@ from fastapi_oauth20.oauth20 import OAuth20Base
 
 
 class GiteeOAuth20(OAuth20Base):
+    """Gitee OAuth2 client implementation."""
+
     def __init__(self, client_id: str, client_secret: str):
+        """
+        Initialize Gitee OAuth2 client.
+
+        :param client_id: Gitee OAuth application client ID.
+        :param client_secret: Gitee OAuth application client secret.
+        """
         super().__init__(
             client_id=client_id,
             client_secret=client_secret,
@@ -18,7 +26,12 @@ class GiteeOAuth20(OAuth20Base):
         )
 
     async def get_userinfo(self, access_token: str) -> dict:
-        """Get user info from Gitee"""
+        """
+        Retrieve user information from Gitee API.
+
+        :param access_token: Valid Gitee access token with user_info scope.
+        :return:
+        """
         headers = {'Authorization': f'Bearer {access_token}'}
         async with httpx.AsyncClient() as client:
             response = await client.get('https://gitee.com/api/v5/user', headers=headers)

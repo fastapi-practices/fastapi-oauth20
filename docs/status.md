@@ -4,7 +4,7 @@
 
     对于强制要求【实名 + 人脸认证】的平台，植入变得困难，所以它们不会很快到来
 
-## END
+## FINISHED
 
 - [x] [LinuxDo](clients/linuxdo.md)
 - [x] [GitHub](clients/github.md)

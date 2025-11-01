@@ -18,9 +18,3 @@
     ```sh
     uv add fastapi-oauth20
     ```
-
-=== ":simple-pdm: pdm"
-
-    ```sh
-    pdm add fastapi-oauth20
-    ```
