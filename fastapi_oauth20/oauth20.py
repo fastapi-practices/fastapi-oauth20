@@ -184,7 +184,13 @@ class OAuth20Base(ABC):
         if token_type_hint is not None:
             data.update({'token_type_hint': token_type_hint})
 
-        async with httpx.AsyncClient() as client:
+        auth = None
+        if not self.revoke_token_endpoint_basic_auth:
+            data.update({'client_id': self.client_id, 'client_secret': self.client_secret})
+        else:
+            auth = httpx.BasicAuth(self.client_id, self.client_secret)
+
+        async with httpx.AsyncClient(auth=auth) as client:
             response = await client.post(
                 self.revoke_token_endpoint,
                 data=data,
