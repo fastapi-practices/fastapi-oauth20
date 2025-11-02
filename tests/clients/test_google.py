@@ -4,7 +4,7 @@ import httpx
 import pytest
 import respx
 
-from fastapi_oauth20.clients.google import GoogleOAuth20
+from fastapi_oauth20 import GoogleOAuth20
 from fastapi_oauth20.errors import GetUserInfoError, HTTPXOAuth20Error
 from fastapi_oauth20.oauth20 import OAuth20Base
 from tests.conftest import (
@@ -16,9 +16,13 @@ from tests.conftest import (
     mock_user_info_response,
 )
 
-# Constants specific to this test file
-CUSTOM_CLIENT_ID = 'custom_id'
-CUSTOM_CLIENT_SECRET = 'custom_secret'
+GOOGLE_USER_INFO_URL = 'https://www.googleapis.com/oauth2/v1/userinfo'
+
+
+@pytest.fixture
+def google_client():
+    """Create Google OAuth2 client instance for testing."""
+    return GoogleOAuth20(client_id=TEST_CLIENT_ID, client_secret=TEST_CLIENT_SECRET)
 
 
 class TestGoogleOAuth20:
@@ -36,9 +40,9 @@ class TestGoogleOAuth20:
 
     def test_google_client_initialization_with_custom_credentials(self):
         """Test Google client initialization with custom credentials."""
-        client = GoogleOAuth20(client_id=CUSTOM_CLIENT_ID, client_secret=CUSTOM_CLIENT_SECRET)
-        assert client.client_id == CUSTOM_CLIENT_ID
-        assert client.client_secret == CUSTOM_CLIENT_SECRET
+        client = GoogleOAuth20(client_id=TEST_CLIENT_ID, client_secret=TEST_CLIENT_SECRET)
+        assert client.client_id == TEST_CLIENT_ID
+        assert client.client_secret == TEST_CLIENT_SECRET
 
     def test_google_client_inheritance(self, google_client):
         """Test that Google client properly inherits from OAuth20Base."""
@@ -71,9 +75,7 @@ class TestGoogleOAuth20:
     async def test_get_userinfo_success(self, google_client):
         """Test successful user info retrieval from Google OAuth2 API."""
         mock_user_data = create_mock_user_data('google')
-        mock_user_info_response(
-            respx, {'name': 'google', 'user_info_url': 'https://www.googleapis.com/oauth2/v1/userinfo'}, mock_user_data
-        )
+        mock_user_info_response(respx, GOOGLE_USER_INFO_URL, mock_user_data)
 
         result = await google_client.get_userinfo(TEST_ACCESS_TOKEN)
         assert result == mock_user_data
@@ -83,9 +85,7 @@ class TestGoogleOAuth20:
     async def test_get_userinfo_authorization_header(self, google_client):
         """Test that authorization header is correctly formatted."""
         mock_user_data = {'id': 'test_user'}
-        route = mock_user_info_response(
-            respx, {'name': 'google', 'user_info_url': 'https://www.googleapis.com/oauth2/v1/userinfo'}, mock_user_data
-        )
+        route = mock_user_info_response(respx, GOOGLE_USER_INFO_URL, mock_user_data)
 
         await google_client.get_userinfo(TEST_ACCESS_TOKEN)
 
@@ -98,9 +98,7 @@ class TestGoogleOAuth20:
     @respx.mock
     async def test_get_userinfo_http_error(self, google_client):
         """Test handling of HTTP errors when getting user info."""
-        respx.get('https://www.googleapis.com/oauth2/v1/userinfo').mock(
-            return_value=httpx.Response(401, text='Unauthorized')
-        )
+        respx.get(GOOGLE_USER_INFO_URL).mock(return_value=httpx.Response(401, text='Unauthorized'))
 
         with pytest.raises(HTTPXOAuth20Error):
             await google_client.get_userinfo(INVALID_TOKEN)
@@ -109,9 +107,7 @@ class TestGoogleOAuth20:
     @respx.mock
     async def test_get_userinfo_empty_response(self, google_client):
         """Test handling of empty user info response."""
-        mock_user_info_response(
-            respx, {'name': 'google', 'user_info_url': 'https://www.googleapis.com/oauth2/v1/userinfo'}, {}
-        )
+        mock_user_info_response(respx, GOOGLE_USER_INFO_URL, {})
 
         result = await google_client.get_userinfo(TEST_ACCESS_TOKEN)
         assert result == {}
@@ -121,9 +117,7 @@ class TestGoogleOAuth20:
     async def test_get_userinfo_partial_data(self, google_client):
         """Test handling of partial user info response."""
         partial_data = {'id': '123456789', 'email': 'test@example.com'}
-        mock_user_info_response(
-            respx, {'name': 'google', 'user_info_url': 'https://www.googleapis.com/oauth2/v1/userinfo'}, partial_data
-        )
+        mock_user_info_response(respx, GOOGLE_USER_INFO_URL, partial_data)
 
         result = await google_client.get_userinfo(TEST_ACCESS_TOKEN)
         assert result == partial_data
@@ -132,9 +126,7 @@ class TestGoogleOAuth20:
     @respx.mock
     async def test_get_userinfo_invalid_json(self, google_client):
         """Test handling of invalid JSON response."""
-        respx.get('https://www.googleapis.com/oauth2/v1/userinfo').mock(
-            return_value=httpx.Response(200, text='invalid json')
-        )
+        respx.get(GOOGLE_USER_INFO_URL).mock(return_value=httpx.Response(200, text='invalid json'))
 
         with pytest.raises(GetUserInfoError):
             await google_client.get_userinfo(TEST_ACCESS_TOKEN)

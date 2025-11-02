@@ -4,7 +4,7 @@ import httpx
 import pytest
 import respx
 
-from fastapi_oauth20.clients.oschina import OSChinaOAuth20
+from fastapi_oauth20 import OSChinaOAuth20
 from fastapi_oauth20.errors import HTTPXOAuth20Error
 from fastapi_oauth20.oauth20 import OAuth20Base
 from tests.conftest import (
@@ -16,9 +16,13 @@ from tests.conftest import (
     mock_user_info_response,
 )
 
-# Constants specific to this test file
-CUSTOM_CLIENT_ID = 'custom_id'
-CUSTOM_CLIENT_SECRET = 'custom_secret'
+OSCHINA_USER_INFO_URL = 'https://www.oschina.net/action/openapi/user'
+
+
+@pytest.fixture
+def oschina_client():
+    """Create OSChina OAuth2 client instance for testing."""
+    return OSChinaOAuth20(client_id=TEST_CLIENT_ID, client_secret=TEST_CLIENT_SECRET)
 
 
 class TestOSChinaOAuth20:
@@ -35,9 +39,9 @@ class TestOSChinaOAuth20:
 
     def test_oschina_client_initialization_with_custom_credentials(self):
         """Test OSChina client initialization with custom credentials."""
-        client = OSChinaOAuth20(client_id=CUSTOM_CLIENT_ID, client_secret=CUSTOM_CLIENT_SECRET)
-        assert client.client_id == CUSTOM_CLIENT_ID
-        assert client.client_secret == CUSTOM_CLIENT_SECRET
+        client = OSChinaOAuth20(client_id=TEST_CLIENT_ID, client_secret=TEST_CLIENT_SECRET)
+        assert client.client_id == TEST_CLIENT_ID
+        assert client.client_secret == TEST_CLIENT_SECRET
 
     def test_oschina_client_inheritance(self, oschina_client):
         """Test that OSChina client properly inherits from OAuth20Base."""
@@ -65,11 +69,7 @@ class TestOSChinaOAuth20:
     async def test_get_userinfo_success(self, oschina_client):
         """Test successful user info retrieval from OSChina API."""
         mock_user_data = create_mock_user_data('oschina')
-        mock_user_info_response(
-            respx,
-            {'name': 'oschina', 'user_info_url': 'https://www.oschina.net/action/openapi/user'},
-            mock_user_data,
-        )
+        mock_user_info_response(respx, OSCHINA_USER_INFO_URL, mock_user_data)
 
         result = await oschina_client.get_userinfo(TEST_ACCESS_TOKEN)
         assert result == mock_user_data
@@ -79,11 +79,7 @@ class TestOSChinaOAuth20:
     async def test_get_userinfo_authorization_header(self, oschina_client):
         """Test that authorization header is correctly formatted."""
         mock_user_data = {'id': 'test_user'}
-        route = mock_user_info_response(
-            respx,
-            {'name': 'oschina', 'user_info_url': 'https://www.oschina.net/action/openapi/user'},
-            mock_user_data,
-        )
+        route = mock_user_info_response(respx, OSCHINA_USER_INFO_URL, mock_user_data)
 
         await oschina_client.get_userinfo(TEST_ACCESS_TOKEN)
 
@@ -96,9 +92,7 @@ class TestOSChinaOAuth20:
     @respx.mock
     async def test_get_userinfo_http_error(self, oschina_client):
         """Test handling of HTTP errors when getting user info."""
-        respx.get('https://www.oschina.net/action/openapi/user').mock(
-            return_value=httpx.Response(401, text='Unauthorized')
-        )
+        respx.get(OSCHINA_USER_INFO_URL).mock(return_value=httpx.Response(401, text='Unauthorized'))
 
         with pytest.raises(HTTPXOAuth20Error):
             await oschina_client.get_userinfo(INVALID_TOKEN)

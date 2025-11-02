@@ -33,6 +33,7 @@ def oauth_client():
         client_secret='test_client_secret',
         authorize_endpoint='https://example.com/oauth/authorize',
         access_token_endpoint='https://example.com/oauth/token',
+        userinfo_endpoint='https://example.com/oauth/userinfo',
         refresh_token_endpoint='https://example.com/oauth/refresh',
         revoke_token_endpoint='https://example.com/oauth/revoke',
         default_scopes=['read', 'write'],
@@ -60,6 +61,7 @@ def test_oauth_base_initialization_minimal():
         client_secret='test_secret',
         authorize_endpoint='https://example.com/auth',
         access_token_endpoint='https://example.com/token',
+        userinfo_endpoint='https://example.com/userinfo',
     )
 
     assert client.client_id == 'test_id'
@@ -78,6 +80,7 @@ def test_oauth_base_initialization_with_basic_auth():
         client_secret='test_secret',
         authorize_endpoint='https://example.com/auth',
         access_token_endpoint='https://example.com/token',
+        userinfo_endpoint='https://example.com/userinfo',
         token_endpoint_basic_auth=True,
         revoke_token_endpoint_basic_auth=True,
     )
@@ -187,6 +190,7 @@ async def test_get_access_token_with_basic_auth():
         client_secret='test_secret',
         authorize_endpoint='https://example.com/auth',
         access_token_endpoint='https://example.com/token',
+        userinfo_endpoint='https://example.com/userinfo',
         token_endpoint_basic_auth=True,
     )
 
@@ -237,6 +241,7 @@ async def test_refresh_token_missing_endpoint():
         client_secret='test_secret',
         authorize_endpoint='https://example.com/auth',
         access_token_endpoint='https://example.com/token',
+        userinfo_endpoint='https://example.com/userinfo',
     )
 
     with pytest.raises(RefreshTokenError, match='refresh token address is missing'):
@@ -288,6 +293,7 @@ async def test_revoke_token_missing_endpoint():
         client_secret='test_secret',
         authorize_endpoint='https://example.com/auth',
         access_token_endpoint='https://example.com/token',
+        userinfo_endpoint='https://example.com/userinfo',
     )
 
     with pytest.raises(RevokeTokenError, match='revoke token address is missing'):
@@ -353,22 +359,19 @@ def test_get_json_result_invalid_json():
         OAuth20Base.get_json_result(mock_response, err_class=AccessTokenError)
 
 
-def test_abstract_method():
-    """Test that get_userinfo is properly abstract."""
-    with pytest.raises(TypeError):
-        OAuth20Base(
-            client_id='test',
-            client_secret='test',
-            authorize_endpoint='https://example.com/auth',
-            access_token_endpoint='https://example.com/token',
-        )
+def test_concrete_implementation():
+    """Test that OAuth20Base can be instantiated directly."""
+    client = OAuth20Base(
+        client_id='test',
+        client_secret='test',
+        authorize_endpoint='https://example.com/auth',
+        access_token_endpoint='https://example.com/token',
+        userinfo_endpoint='https://example.com/userinfo',
+    )
 
-
-def test_oauth_base_inheritance():
-    """Test that OAuth20Base is properly abstract."""
-    from abc import ABC
-
-    assert issubclass(OAuth20Base, ABC)
+    assert client.client_id == 'test'
+    assert client.client_secret == 'test'
+    assert client.userinfo_endpoint == 'https://example.com/userinfo'
 
 
 @pytest.mark.asyncio
@@ -379,6 +382,7 @@ async def test_get_userinfo_implementation():
         client_secret='test',
         authorize_endpoint='https://example.com/auth',
         access_token_endpoint='https://example.com/token',
+        userinfo_endpoint='https://example.com/userinfo',
     )
 
     result = await client.get_userinfo('test_token')
