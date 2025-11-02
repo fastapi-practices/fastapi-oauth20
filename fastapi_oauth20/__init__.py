@@ -9,4 +9,4 @@ from .clients.google import GoogleOAuth20 as GoogleOAuth20
 from .clients.linuxdo import LinuxDoOAuth20 as LinuxDoOAuth20
 from .clients.oschina import OSChinaOAuth20 as OSChinaOAuth20
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
