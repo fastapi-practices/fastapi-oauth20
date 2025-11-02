@@ -16,9 +16,13 @@ from tests.conftest import (
     mock_user_info_response,
 )
 
-# Constants specific to this test file
-CUSTOM_CLIENT_ID = 'custom_id'
-CUSTOM_CLIENT_SECRET = 'custom_secret'
+GITEE_USER_INFO_URL = 'https://gitee.com/api/v5/user'
+
+
+@pytest.fixture
+def gitee_client():
+    """Create Gitee OAuth2 client instance for testing."""
+    return GiteeOAuth20(client_id=TEST_CLIENT_ID, client_secret=TEST_CLIENT_SECRET)
 
 
 class TestGiteeOAuth20:
@@ -35,9 +39,9 @@ class TestGiteeOAuth20:
 
     def test_gitee_client_initialization_with_custom_credentials(self):
         """Test Gitee client initialization with custom credentials."""
-        client = GiteeOAuth20(client_id=CUSTOM_CLIENT_ID, client_secret=CUSTOM_CLIENT_SECRET)
-        assert client.client_id == CUSTOM_CLIENT_ID
-        assert client.client_secret == CUSTOM_CLIENT_SECRET
+        client = GiteeOAuth20(client_id=TEST_CLIENT_ID, client_secret=TEST_CLIENT_SECRET)
+        assert client.client_id == TEST_CLIENT_ID
+        assert client.client_secret == TEST_CLIENT_SECRET
 
     def test_gitee_client_inheritance(self, gitee_client):
         """Test that Gitee client properly inherits from OAuth20Base."""
@@ -67,9 +71,7 @@ class TestGiteeOAuth20:
     async def test_get_userinfo_success(self, gitee_client):
         """Test successful user info retrieval from Gitee API."""
         mock_user_data = create_mock_user_data('gitee')
-        mock_user_info_response(
-            respx, {'name': 'gitee', 'user_info_url': 'https://gitee.com/api/v5/user'}, mock_user_data
-        )
+        mock_user_info_response(respx, GITEE_USER_INFO_URL, mock_user_data)
 
         result = await gitee_client.get_userinfo(TEST_ACCESS_TOKEN)
         assert result == mock_user_data
@@ -79,9 +81,7 @@ class TestGiteeOAuth20:
     async def test_get_userinfo_authorization_header(self, gitee_client):
         """Test that authorization header is correctly formatted."""
         mock_user_data = {'id': 'test_user'}
-        route = mock_user_info_response(
-            respx, {'name': 'gitee', 'user_info_url': 'https://gitee.com/api/v5/user'}, mock_user_data
-        )
+        route = mock_user_info_response(respx, GITEE_USER_INFO_URL, mock_user_data)
 
         await gitee_client.get_userinfo(TEST_ACCESS_TOKEN)
 
@@ -94,7 +94,7 @@ class TestGiteeOAuth20:
     @respx.mock
     async def test_get_userinfo_http_error(self, gitee_client):
         """Test handling of HTTP errors when getting user info."""
-        respx.get('https://gitee.com/api/v5/user').mock(return_value=httpx.Response(401, text='Unauthorized'))
+        respx.get(GITEE_USER_INFO_URL).mock(return_value=httpx.Response(401, text='Unauthorized'))
 
         with pytest.raises(HTTPXOAuth20Error):
             await gitee_client.get_userinfo(INVALID_TOKEN)
@@ -103,7 +103,7 @@ class TestGiteeOAuth20:
     @respx.mock
     async def test_get_userinfo_empty_response(self, gitee_client):
         """Test handling of empty user info response."""
-        mock_user_info_response(respx, {'name': 'gitee', 'user_info_url': 'https://gitee.com/api/v5/user'}, {})
+        mock_user_info_response(respx, GITEE_USER_INFO_URL, {})
 
         result = await gitee_client.get_userinfo(TEST_ACCESS_TOKEN)
         assert result == {}
@@ -113,9 +113,7 @@ class TestGiteeOAuth20:
     async def test_get_userinfo_partial_data(self, gitee_client):
         """Test handling of partial user info response."""
         partial_data = {'id': 123456, 'login': 'testuser'}
-        mock_user_info_response(
-            respx, {'name': 'gitee', 'user_info_url': 'https://gitee.com/api/v5/user'}, partial_data
-        )
+        mock_user_info_response(respx, GITEE_USER_INFO_URL, partial_data)
 
         result = await gitee_client.get_userinfo(TEST_ACCESS_TOKEN)
         assert result == partial_data
@@ -124,7 +122,7 @@ class TestGiteeOAuth20:
     @respx.mock
     async def test_get_userinfo_invalid_json(self, gitee_client):
         """Test handling of invalid JSON response."""
-        respx.get('https://gitee.com/api/v5/user').mock(return_value=httpx.Response(200, text='invalid json'))
+        respx.get(GITEE_USER_INFO_URL).mock(return_value=httpx.Response(200, text='invalid json'))
 
         with pytest.raises(GetUserInfoError):
             await gitee_client.get_userinfo(TEST_ACCESS_TOKEN)

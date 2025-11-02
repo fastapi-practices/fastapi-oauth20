@@ -16,9 +16,13 @@ from tests.conftest import (
     mock_user_info_response,
 )
 
-# Constants specific to this test file
-CUSTOM_CLIENT_ID = 'custom_id'
-CUSTOM_CLIENT_SECRET = 'custom_secret'
+LINUXDO_USER_INFO_URL = 'https://connect.linux.do/api/user'
+
+
+@pytest.fixture
+def linuxdo_client():
+    """Create LinuxDo OAuth2 client instance for testing."""
+    return LinuxDoOAuth20(client_id=TEST_CLIENT_ID, client_secret=TEST_CLIENT_SECRET)
 
 
 class TestLinuxDoOAuth20:
@@ -36,9 +40,9 @@ class TestLinuxDoOAuth20:
 
     def test_linuxdo_client_initialization_with_custom_credentials(self):
         """Test LinuxDo client initialization with custom credentials."""
-        client = LinuxDoOAuth20(client_id=CUSTOM_CLIENT_ID, client_secret=CUSTOM_CLIENT_SECRET)
-        assert client.client_id == CUSTOM_CLIENT_ID
-        assert client.client_secret == CUSTOM_CLIENT_SECRET
+        client = LinuxDoOAuth20(client_id=TEST_CLIENT_ID, client_secret=TEST_CLIENT_SECRET)
+        assert client.client_id == TEST_CLIENT_ID
+        assert client.client_secret == TEST_CLIENT_SECRET
 
     def test_linuxdo_client_inheritance(self, linuxdo_client):
         """Test that LinuxDo client properly inherits from OAuth20Base."""
@@ -66,9 +70,7 @@ class TestLinuxDoOAuth20:
     async def test_get_userinfo_success(self, linuxdo_client):
         """Test successful user info retrieval from LinuxDo API."""
         mock_user_data = create_mock_user_data('linuxdo')
-        mock_user_info_response(
-            respx, {'name': 'linuxdo', 'user_info_url': 'https://connect.linux.do/api/user'}, mock_user_data
-        )
+        mock_user_info_response(respx, LINUXDO_USER_INFO_URL, mock_user_data)
 
         result = await linuxdo_client.get_userinfo(TEST_ACCESS_TOKEN)
         assert result == mock_user_data
@@ -78,9 +80,7 @@ class TestLinuxDoOAuth20:
     async def test_get_userinfo_authorization_header(self, linuxdo_client):
         """Test that authorization header is correctly formatted."""
         mock_user_data = {'id': 'test_user'}
-        route = mock_user_info_response(
-            respx, {'name': 'linuxdo', 'user_info_url': 'https://connect.linux.do/api/user'}, mock_user_data
-        )
+        route = mock_user_info_response(respx, LINUXDO_USER_INFO_URL, mock_user_data)
 
         await linuxdo_client.get_userinfo(TEST_ACCESS_TOKEN)
 
@@ -93,7 +93,7 @@ class TestLinuxDoOAuth20:
     @respx.mock
     async def test_get_userinfo_http_error(self, linuxdo_client):
         """Test handling of HTTP errors when getting user info."""
-        respx.get('https://connect.linux.do/api/user').mock(return_value=httpx.Response(401, text='Unauthorized'))
+        respx.get(LINUXDO_USER_INFO_URL).mock(return_value=httpx.Response(401, text='Unauthorized'))
 
         with pytest.raises(HTTPXOAuth20Error):
             await linuxdo_client.get_userinfo(INVALID_TOKEN)
