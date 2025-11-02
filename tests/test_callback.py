@@ -8,13 +8,16 @@ from fastapi import Depends, FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 
-from fastapi_oauth20 import FastAPIOAuth20, OAuth20AuthorizeCallbackError
-from fastapi_oauth20.clients.feishu import FeiShuOAuth20
-from fastapi_oauth20.clients.gitee import GiteeOAuth20
-from fastapi_oauth20.clients.github import GitHubOAuth20
-from fastapi_oauth20.clients.google import GoogleOAuth20
-from fastapi_oauth20.clients.linuxdo import LinuxDoOAuth20
-from fastapi_oauth20.clients.oschina import OSChinaOAuth20
+from fastapi_oauth20 import (
+    FastAPIOAuth20,
+    FeiShuOAuth20,
+    GiteeOAuth20,
+    GitHubOAuth20,
+    GoogleOAuth20,
+    LinuxDoOAuth20,
+    OAuth20AuthorizeCallbackError,
+    OSChinaOAuth20,
+)
 from tests.conftest import (
     TEST_ACCESS_TOKEN,
     TEST_CLIENT_ID,

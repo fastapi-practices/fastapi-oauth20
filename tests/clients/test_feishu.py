@@ -4,7 +4,7 @@ import httpx
 import pytest
 import respx
 
-from fastapi_oauth20.clients.feishu import FeiShuOAuth20
+from fastapi_oauth20 import FeiShuOAuth20
 from fastapi_oauth20.errors import GetUserInfoError, HTTPXOAuth20Error
 from fastapi_oauth20.oauth20 import OAuth20Base
 from tests.conftest import (
