@@ -6,11 +6,11 @@ import httpx
 
 from fastapi import HTTPException, Request
 
-from fastapi_oauth20.errors import OAuth20RequestError
+from fastapi_oauth20.errors import OAuth20BaseError, OAuth20RequestError
 from fastapi_oauth20.oauth20 import OAuth20Base
 
 
-class OAuth20AuthorizeCallbackError(HTTPException):
+class OAuth20AuthorizeCallbackError(HTTPException, OAuth20BaseError):
     """Exception raised during OAuth2 authorization callback processing in FastAPI."""
 
     def __init__(
