@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import abc
 import json
 
-from abc import ABC
 from typing import Any, Literal, cast
 from urllib.parse import urlencode
 
@@ -11,6 +9,7 @@ import httpx
 
 from fastapi_oauth20.errors import (
     AccessTokenError,
+    GetUserInfoError,
     HTTPXOAuth20Error,
     OAuth20RequestError,
     RefreshTokenError,
@@ -18,7 +17,7 @@ from fastapi_oauth20.errors import (
 )
 
 
-class OAuth20Base(ABC):
+class OAuth20Base:
     def __init__(
         self,
         client_id: str,
@@ -26,6 +25,7 @@ class OAuth20Base(ABC):
         *,
         authorize_endpoint: str,
         access_token_endpoint: str,
+        userinfo_endpoint: str,
         refresh_token_endpoint: str | None = None,
         revoke_token_endpoint: str | None = None,
         default_scopes: list[str] | None = None,
@@ -39,6 +39,7 @@ class OAuth20Base(ABC):
         :param client_secret: The client secret provided by the OAuth2 provider.
         :param authorize_endpoint: The authorization endpoint URL where users are redirected to grant access.
         :param access_token_endpoint: The token endpoint URL for exchanging authorization codes for access tokens.
+        :param userinfo_endpoint: The endpoint URL for retrieving user information using access token.
         :param refresh_token_endpoint: The token endpoint URL for refreshing expired access tokens using refresh tokens.
         :param revoke_token_endpoint: The endpoint URL for revoking access tokens or refresh tokens.
         :param default_scopes: Default list of OAuth scopes to request if none are specified.
@@ -51,6 +52,7 @@ class OAuth20Base(ABC):
         self.access_token_endpoint = access_token_endpoint
         self.refresh_token_endpoint = refresh_token_endpoint
         self.revoke_token_endpoint = revoke_token_endpoint
+        self.userinfo_endpoint = userinfo_endpoint
         self.default_scopes = default_scopes
         self.token_endpoint_basic_auth = token_endpoint_basic_auth
         self.revoke_token_endpoint_basic_auth = revoke_token_endpoint_basic_auth
@@ -227,7 +229,6 @@ class OAuth20Base(ABC):
         except json.JSONDecodeError as e:
             raise err_class('Result serialization failed.', response) from e
 
-    @abc.abstractmethod
     async def get_userinfo(self, access_token: str) -> dict[str, Any]:
         """
         Retrieve user information from the OAuth2 provider.
@@ -235,4 +236,9 @@ class OAuth20Base(ABC):
         :param access_token: Valid access token to authenticate the request to the provider's user info endpoint.
         :return:
         """
-        raise NotImplementedError()
+        headers = {'Authorization': f'Bearer {access_token}'}
+        async with httpx.AsyncClient() as client:
+            response = await client.get(self.userinfo_endpoint, headers=headers)
+            self.raise_httpx_oauth20_errors(response)
+            result = self.get_json_result(response, err_class=GetUserInfoError)
+            return result
