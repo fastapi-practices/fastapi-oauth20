@@ -20,6 +20,8 @@ colorama==0.4.6 ; sys_platform == 'win32'
     # via
     #   click
     #   pytest
+coverage==7.11.1
+    # via pytest-cov
 distlib==0.4.0
     # via virtualenv
 exceptiongroup==1.3.0 ; python_full_version < '3.11'
@@ -52,7 +54,9 @@ packaging==25.0
 platformdirs==4.5.0
     # via virtualenv
 pluggy==1.6.0
-    # via pytest
+    # via
+    #   pytest
+    #   pytest-cov
 pre-commit==4.3.0
 pydantic==2.12.2
     # via fastapi
@@ -61,8 +65,11 @@ pydantic-core==2.41.4
 pygments==2.19.2
     # via pytest
 pytest==8.4.2
-    # via pytest-asyncio
+    # via
+    #   pytest-asyncio
+    #   pytest-cov
 pytest-asyncio==1.2.0
+pytest-cov==7.0.0
 pyyaml==6.0.3
     # via pre-commit
 respx==0.22.0
@@ -70,8 +77,10 @@ sniffio==1.3.1
     # via anyio
 starlette==0.48.0
     # via fastapi
-tomli==2.3.0 ; python_full_version < '3.11'
-    # via pytest
+tomli==2.3.0 ; python_full_version <= '3.11'
+    # via
+    #   coverage
+    #   pytest
 ty==0.0.1a23
 typing-extensions==4.15.0
     # via

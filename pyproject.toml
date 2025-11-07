@@ -30,12 +30,13 @@ repository = "https://github.com/fastapi-practices/fastapi_oauth20"
 
 [dependency-groups]
 dev = [
+    "click==8.2.1",
+    "fastapi>=0.119.0",
     "pytest>=8.4.0",
     "pytest-asyncio>=1.2.0",
-    "fastapi>=0.119.0",
+    "pytest-cov>=7.0.0",
     "respx>=0.22.0",
     "ty>=0.0.1a23",
-    "click==8.2.1",
 ]
 lint = [
     "pre-commit>=4.3.0",

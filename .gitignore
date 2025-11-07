@@ -1,8 +1,5 @@
 __pycache__/
 .pytest_cache/
-.pdm.toml
-.pdm-python
-.pdm-build/
 .env
 .venv
 venv/
@@ -10,3 +7,6 @@ venv/
 .vscode/
 .ruff_cache/
 dist/
+.claude/
+.coverage
+coverage.xml
