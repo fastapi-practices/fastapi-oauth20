@@ -16,14 +16,12 @@ nav:
       - GitHub: clients/github.md
       - Gitee: clients/gitee.md
       - 开源中国: clients/oschina.md
-      - 微信小程序: clients/wechat_open.md
-      - 微信开放平台: clients/wechat_mp.md
+      - 微信小程序: clients/wechat_mp.md
+      - 微信开放平台: clients/wechat_open.md
       - 企业微信二维码登录: clients/wechat_work.md
       - 飞书: clients/feishu.md
-      - 钉钉: clients/dingding.md
+      - 钉钉: clients/dingtalk.md
       - QQ: clients/qq.md
-      - 微博: clients/weibo.md
-      - 抖音: clients/douyin.md
       - Google: clients/google.md
   - 变更日志: changelog.md
 theme:

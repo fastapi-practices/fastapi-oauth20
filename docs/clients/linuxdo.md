@@ -8,17 +8,17 @@
 
 ### 登录
 
-登录已注册的账号，通过主页左侧 Connect 进入 connect 页面：[connect](https://connect.linux.do/)
+登录已注册的账号，通过主页左侧 Connect 进入 connect 页面
 
 ![connect.png](../public/images/linuxdo/connect.png)
 
 ### 创建应用
 
-进入开发者界面：[sso](https://connect.linux.do/dash/sso)
+进入开发者界面
 
 ![dev.png](../public/images/linuxdo/dev.png)
 
-申请新接入：[new](https://connect.linux.do/dash/sso/new)
+申请新接入
 
 ![new.png](../public/images/linuxdo/new.png)
 
@@ -30,4 +30,4 @@
 
 ![secrets.png](../public/images/linuxdo/secrets.png)
 
-记录 `Client ID`、`Client Secret`、`回调地址`，这三个东西在我们集成的时候都用得到，请妥善保管 ID 和 Secret
+记录 `Client ID`、`Client Secret`、`回调地址`，这三个东西在我们集成的时候都用得到，请妥善保管 `Client ID` 和 `Client Secret`
