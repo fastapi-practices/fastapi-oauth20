@@ -56,7 +56,10 @@ async def oauth2_github():
 ```python
 @app.get("/oauth2/github/callback")
 async def oauth2_github_callback(
-    oauth_result: Annotated[FastAPIOAuth20, Depends(github_oauth)]
+        oauth_result: Annotated[
+            FastAPIOAuth20,
+            Depends(github_oauth),
+        ],
 ):
     """处理 GitHub OAuth 回调"""
     token_data, state = oauth_result
@@ -131,46 +134,37 @@ async def oauth2_authorize_callback_error_handler(request: Request, exc: OAuth20
 ```python
 from typing import Annotated
 
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends
 from fastapi.responses import RedirectResponse
-from fastapi_oauth20 import GitHubOAuth20, FastAPIOAuth20
-from fastapi_oauth20 import OAuth20AuthorizeCallbackError
 
-import secrets
+from fastapi_oauth20 import GitHubOAuth20, FastAPIOAuth20
 
 app = FastAPI()
 
-# 初始化客户端
+redirect_uri = "http://localhost:8000/auth/github/callback"
+
 github_client = GitHubOAuth20(
-    client_id="your_client_id",
-    client_secret="your_client_secret"
-)
-
-# 创建依赖
-github_oauth = FastAPIOAuth20(
-    client=github_client,
-    redirect_uri="http://localhost:8000/auth/github/callback"
+    client_id="your_github_client_id",
+    client_secret="your_github_client_secret"
 )
 
 
-@app.get("/oauth2/github")
-async def oauth2_github():
-    """GitHub 授权入口"""
-    state = secrets.token_urlsafe(32)
-    auth_url = await github_client.get_authorization_url(
-        redirect_uri="http://localhost:8000/auth/github/callback",
-        state=state
-    )
+@app.get("/auth/github")
+async def github_auth():
+    auth_url = await github_client.get_authorization_url(redirect_uri=redirect_uri)
     return RedirectResponse(url=auth_url)
 
 
-@app.get("/oauth2/github/callback")
-async def oauth2_github_callback(
-    oauth_result: Annotated[FastAPIOAuth20, Depends(github_oauth)]
+@app.get("/auth/github/callback")
+async def github_callback(
+        oauth2: Annotated[
+            FastAPIOAuth20,
+            Depends(FastAPIOAuth20(github_client, redirect_uri=redirect_uri)),
+        ],
 ):
-    """GitHub 授权回调"""
-    token_data, state = oauth_result
-    user_info = await github_client.get_userinfo(token_data["access_token"])
+    token_data, state = oauth2
+    access_token = token_data['access_token']
+    user_info = await github_client.get_userinfo(access_token)
     return {"user": user_info}
 
 

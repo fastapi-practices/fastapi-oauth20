@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+from typing import Annotated
+
 import httpx
 import pytest
 import respx
@@ -128,7 +128,12 @@ def setup_oauth_callback_route(app: FastAPI, provider_config: dict, oauth_depend
     callback_path = f'/auth/{provider_config["name"]}/callback'
 
     @app.get(callback_path)
-    async def oauth_callback_handler(access_token_state=Depends(oauth_dependency)):
+    async def oauth_callback_handler(
+        access_token_state: Annotated[
+            FastAPIOAuth20,
+            Depends(oauth_dependency),
+        ],
+    ):
         token, state = access_token_state
         return {'provider': provider_config['name'], 'access_token': token, 'state': state}
 
@@ -223,10 +228,14 @@ class TestFastAPIOAuth20Basic:
     def test_custom_exception_handler(self, fastapi_app):
         """Test custom exception handler for OAuth2 errors."""
         github_client = GitHubOAuth20(client_id=TEST_CLIENT_ID, client_secret=TEST_CLIENT_SECRET)
-        github_oauth2_callback = FastAPIOAuth20(github_client, redirect_uri=f'{LOCALHOST_URL}/auth/github/callback')
 
         @fastapi_app.get('/auth/github/callback')
-        async def github_callback(access_token_state=Depends(github_oauth2_callback)):
+        async def github_callback(
+            access_token_state: Annotated[
+                FastAPIOAuth20,
+                Depends(FastAPIOAuth20(github_client, redirect_uri=f'{LOCALHOST_URL}/auth/github/callback')),
+            ],
+        ):
             token, state = access_token_state
             return {'access_token': token, 'state': state}
 
@@ -254,19 +263,27 @@ class TestFastAPIOAuth20Basic:
         """Test multiple OAuth providers in the same app."""
         # Setup GitHub OAuth
         github_client = GitHubOAuth20(client_id=TEST_CLIENT_ID, client_secret=TEST_CLIENT_SECRET)
-        github_oauth2_callback = FastAPIOAuth20(github_client, redirect_uri=f'{LOCALHOST_URL}/auth/github/callback')
 
         @fastapi_app.get('/auth/github/callback')
-        async def github_callback(access_token_state=Depends(github_oauth2_callback)):
+        async def github_callback(
+            access_token_state: Annotated[
+                FastAPIOAuth20,
+                Depends(FastAPIOAuth20(github_client, redirect_uri=f'{LOCALHOST_URL}/auth/github/callback')),
+            ],
+        ):
             token, state = access_token_state
             return {'provider': 'github', 'access_token': token, 'state': state}
 
         # Setup Google OAuth
         google_client = GoogleOAuth20(client_id=TEST_CLIENT_ID, client_secret=TEST_CLIENT_SECRET)
-        google_oauth2_callback = FastAPIOAuth20(google_client, redirect_uri=f'{LOCALHOST_URL}/auth/google/callback')
 
         @fastapi_app.get('/auth/google/callback')
-        async def google_callback(access_token_state=Depends(google_oauth2_callback)):
+        async def google_callback(
+            access_token_state: Annotated[
+                FastAPIOAuth20,
+                Depends(FastAPIOAuth20(google_client, redirect_uri=f'{LOCALHOST_URL}/auth/google/callback')),
+            ],
+        ):
             token, state = access_token_state
             return {'provider': 'google', 'access_token': token, 'state': state}
 
@@ -413,17 +430,23 @@ class TestFastAPIOAuth20Integration:
         app2 = FastAPI()
 
         # Setup first app
-        oauth_dep1 = FastAPIOAuth20(github_client, redirect_uri=f'{LOCALHOST_URL}/app1/callback')
-
         @app1.get('/auth/github/callback')
-        async def github_callback1(access_token_state=Depends(oauth_dep1)):
+        async def github_callback1(
+            access_token_state: Annotated[
+                FastAPIOAuth20,
+                Depends(FastAPIOAuth20(github_client, redirect_uri=f'{LOCALHOST_URL}/app1/callback')),
+            ],
+        ):
             return {'app': 'app1', 'access_token': access_token_state}
 
         # Setup second app
-        oauth_dep2 = FastAPIOAuth20(github_client, redirect_uri=f'{LOCALHOST_URL}/app2/callback')
-
         @app2.get('/auth/github/callback')
-        async def github_callback2(access_token_state=Depends(oauth_dep2)):
+        async def github_callback2(
+            access_token_state: Annotated[
+                FastAPIOAuth20,
+                Depends(FastAPIOAuth20(github_client, redirect_uri=f'{LOCALHOST_URL}/app2/callback')),
+            ],
+        ):
             return {'app': 'app2', 'access_token': access_token_state}
 
         client1 = TestClient(app1)

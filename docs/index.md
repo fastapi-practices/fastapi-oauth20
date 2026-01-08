@@ -14,33 +14,35 @@
 
 ### Installation
 
-```bash
-pip install fastapi-oauth20
-```
+=== "pip"
+
+    ```bash
+    pip install fastapi-oauth20
+    ```
+
+=== "uv"
+
+    ```bash
+    uv add fastapi-oauth20
+    ```
 
 ### Basic Usage
 
 ```python
+from typing import Annotated
+
 from fastapi import FastAPI, Depends
-from fastapi_oauth20 import GitHubOAuth20, FastAPIOAuth20
 from fastapi.responses import RedirectResponse
-import secrets
+
+from fastapi_oauth20 import GitHubOAuth20, FastAPIOAuth20
 
 app = FastAPI()
 
-# 定义重定向地址
 redirect_uri = "http://localhost:8000/auth/github/callback"
 
-# 初始化 GitHub OAuth2 客户端
 github_client = GitHubOAuth20(
     client_id="your_github_client_id",
     client_secret="your_github_client_secret"
-)
-
-# 创建 FastAPI OAuth2 依赖项
-github_oauth = FastAPIOAuth20(
-    client=github_client,
-    redirect_uri=redirect_uri
 )
 
 
@@ -51,16 +53,14 @@ async def github_auth():
 
 
 @app.get("/auth/github/callback")
-async def github_callback(oauth_result: tuple = Depends(github_oauth)):
-    token_data, state = oauth_result
-    user_info = await github_client.get_userinfo(token_data["access_token"])
+async def github_callback(
+        oauth2: Annotated[
+            FastAPIOAuth20,
+            Depends(FastAPIOAuth20(github_client, redirect_uri=redirect_uri)),
+        ],
+):
+    token_data, state = oauth2
+    access_token = token_data['access_token']
+    user_info = await github_client.get_userinfo(access_token)
     return {"user": user_info}
 ```
-
-## 互动
-
-[TG / Discord](https://wu-clan.github.io/homepage/)
-
-## 赞助
-
-如果此项目能够帮助到你，你可以赞助作者一些咖啡豆表示鼓励：[Sponsor](https://wu-clan.github.io/sponsor/)

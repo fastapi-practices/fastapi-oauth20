@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 from fastapi_oauth20.oauth20 import OAuth20Base
 
 

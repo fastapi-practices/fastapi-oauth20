@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 from fastapi_oauth20.clients.feishu import FeiShuOAuth20
 from fastapi_oauth20.clients.gitee import GiteeOAuth20
 from fastapi_oauth20.clients.github import GitHubOAuth20
