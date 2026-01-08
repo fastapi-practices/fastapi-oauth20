@@ -1,9 +1,5 @@
 下面展示了我们的计划，如果你有更多需求，请在仓库内创建 Issues，我们将尽力完成所有目标
 
-!!! danger
-
-    对于强制要求【实名 + 人脸认证】的平台，植入变得困难，所以它们不会很快到来
-
 ## FINISHED
 
 - [x] [LinuxDo](clients/linuxdo.md)
@@ -20,5 +16,3 @@
 - [ ] [企业微信二维码登录](clients/wechat_work.md)
 - [ ] [钉钉](clients/dingtalk.md)
 - [ ] [QQ](clients/qq.md)
-- [ ] [微博](clients/weibo.md)
-- [ ] [抖音](clients/douyin.md)

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 import httpx
 
 TEST_CLIENT_ID = 'test_client_id'

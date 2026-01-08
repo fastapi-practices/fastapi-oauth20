@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 from .callback import FastAPIOAuth20 as FastAPIOAuth20
 from .callback import OAuth20AuthorizeCallbackError as OAuth20AuthorizeCallbackError
 from .clients.feishu import FeiShuOAuth20 as FeiShuOAuth20

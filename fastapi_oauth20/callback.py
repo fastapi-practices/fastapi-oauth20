@@ -1,10 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-from typing import Any
+from typing import Annotated, Any
 
 import httpx
 
-from fastapi import HTTPException, Request
+from fastapi import HTTPException, Query, Request
 
 from fastapi_oauth20.errors import OAuth20BaseError, OAuth20RequestError
 from fastapi_oauth20.oauth20 import OAuth20Base
@@ -53,10 +51,10 @@ class FastAPIOAuth20:
     async def __call__(
         self,
         request: Request,
-        code: str | None = None,
-        state: str | None = None,
-        code_verifier: str | None = None,
-        error: str | None = None,
+        code: Annotated[str | None, Query(description='Authorization code from OAuth2 provider')] = None,
+        state: Annotated[str | None, Query(description='State parameter for CSRF protection')] = None,
+        code_verifier: Annotated[str | None, Query(description='PKCE code verifier for enhanced security')] = None,
+        error: Annotated[str | None, Query(description='Error code if authorization failed')] = None,
     ) -> tuple[dict[str, Any], str | None]:
         """
         Process OAuth2 callback request and exchange authorization code for access token.
