@@ -10,6 +10,7 @@ class OSChinaOAuth20(OAuth20Base):
 
         :param client_id: OSChina OAuth application client ID.
         :param client_secret: OSChina OAuth application client secret.
+        :return:
         """
         super().__init__(
             client_id=client_id,

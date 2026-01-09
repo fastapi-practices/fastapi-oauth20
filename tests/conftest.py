@@ -51,6 +51,27 @@ def create_mock_user_data(provider_name: str, **overrides):
             'email': 'test@example.com',
             'avatar': 'https://oschina.net/img/test.jpg',
         },
+        'wechat_mp': {
+            'openid': 'test_openid_mp',
+            'nickname': 'Test User',
+            'sex': 1,
+            'province': 'Guangdong',
+            'city': 'Shenzhen',
+            'country': 'China',
+            'headimgurl': 'https://thirdwx.qlogo.cn/test.jpg',
+            'privilege': [],
+        },
+        'wechat_open': {
+            'openid': 'test_openid_open',
+            'nickname': 'Test User',
+            'sex': 1,
+            'province': 'Guangdong',
+            'city': 'Shenzhen',
+            'country': 'China',
+            'headimgurl': 'https://thirdwx.qlogo.cn/test.jpg',
+            'privilege': [],
+            'unionid': 'test_unionid',
+        },
     }
 
     base_data = MOCK_USER_DATA.get(provider_name, {}).copy()

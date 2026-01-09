@@ -1,3 +1,5 @@
+import inspect
+
 from typing import Annotated, Any
 
 import httpx
@@ -25,6 +27,7 @@ class OAuth20AuthorizeCallbackError(HTTPException, OAuth20BaseError):
         :param detail: Error detail message describing what went wrong.
         :param headers: Additional HTTP headers to include in the error response.
         :param response: The original HTTP response that caused the error (if any).
+        :return:
         """
         self.response = response
         super().__init__(status_code=status_code, detail=detail, headers=headers)
@@ -44,6 +47,7 @@ class FastAPIOAuth20:
 
         :param client: An OAuth2 client instance that inherits from OAuth20Base.
         :param redirect_uri: The full callback URL where the OAuth2 provider redirects after authorization. Must match the URL registered with the OAuth2 provider.
+        :return:
         """
         self.client = client
         self.redirect_uri = redirect_uri
@@ -64,6 +68,7 @@ class FastAPIOAuth20:
         :param state: The state parameter for CSRF protection (extracted from query parameters).
         :param code_verifier: PKCE code verifier if PKCE was used in the authorization request.
         :param error: Error parameter from OAuth2 provider if authorization was denied or failed.
+        :return:
         """
         if code is None or error is not None:
             raise OAuth20AuthorizeCallbackError(
@@ -71,12 +76,19 @@ class FastAPIOAuth20:
                 detail=error if error is not None else None,
             )
 
+        kwargs = {'code': code}
+
         try:
-            access_token = await self.client.get_access_token(
-                code=code,
-                redirect_uri=self.redirect_uri,
-                code_verifier=code_verifier,
-            )
+            sig = inspect.signature(self.client.get_access_token)
+            params = sig.parameters
+
+            if 'redirect_uri' in params:
+                kwargs['redirect_uri'] = self.redirect_uri
+
+            if 'code_verifier' in params:
+                kwargs['code_verifier'] = code_verifier
+
+            access_token = await self.client.get_access_token(**kwargs)
         except OAuth20RequestError as e:
             raise OAuth20AuthorizeCallbackError(
                 status_code=500,

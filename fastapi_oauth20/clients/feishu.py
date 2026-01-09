@@ -10,6 +10,7 @@ class FeiShuOAuth20(OAuth20Base):
 
         :param client_id: FeiShu app client ID from the FeiShu developer console.
         :param client_secret: FeiShu app client secret from the FeiShu developer console.
+        :return:
         """
         super().__init__(
             client_id=client_id,

@@ -12,8 +12,9 @@ nav:
   - 用法: usage.md
   - 客户端状态: status.md
   - 客户端申请:
-      - LinuxDo: clients/linuxdo.md
       - GitHub: clients/github.md
+      - Google: clients/google.md
+      - LinuxDo: clients/linuxdo.md
       - Gitee: clients/gitee.md
       - 开源中国: clients/oschina.md
       - 微信小程序: clients/wechat_mp.md
@@ -22,7 +23,6 @@ nav:
       - 飞书: clients/feishu.md
       - 钉钉: clients/dingtalk.md
       - QQ: clients/qq.md
-      - Google: clients/google.md
   - 变更日志: changelog.md
 theme:
   name: material
