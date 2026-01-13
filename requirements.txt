@@ -29,7 +29,7 @@ exceptiongroup==1.3.0 ; python_full_version < '3.11'
     #   anyio
     #   pytest
 fastapi==0.119.0
-filelock==3.20.0
+filelock==3.20.3
     # via virtualenv
 h11==0.16.0
     # via httpcore
