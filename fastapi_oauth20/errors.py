@@ -11,6 +11,7 @@ class OAuth20BaseError(Exception):
         Initialize base OAuth2 error.
 
         :param msg: Human-readable error message describing the OAuth2 error.
+        :return:
         """
         self.msg = msg
         super().__init__(msg)
@@ -25,6 +26,7 @@ class OAuth20RequestError(OAuth20BaseError):
 
         :param msg: Human-readable error message describing the request error.
         :param response: The HTTP response object that caused the error (if available).
+        :return:
         """
         self.response = response
         super().__init__(msg)

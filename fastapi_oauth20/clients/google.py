@@ -10,6 +10,7 @@ class GoogleOAuth20(OAuth20Base):
 
         :param client_id: Google OAuth 2.0 client ID from Google Cloud Console.
         :param client_secret: Google OAuth 2.0 client secret from Google Cloud Console.
+        :return:
         """
         super().__init__(
             client_id=client_id,

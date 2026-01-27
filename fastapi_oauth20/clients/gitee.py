@@ -10,6 +10,7 @@ class GiteeOAuth20(OAuth20Base):
 
         :param client_id: Gitee OAuth application client ID.
         :param client_secret: Gitee OAuth application client secret.
+        :return:
         """
         super().__init__(
             client_id=client_id,

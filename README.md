@@ -19,6 +19,17 @@ pip install fastapi_oauth20
 
 [fastapi oauth20](https://fastapi-practices.github.io/fastapi-oauth20/)
 
+## Demo
+
+查看完整的示例项目：[fastapi-oauth20-demo](https://github.com/fastapi-practices/fastapi-oauth20-demo)
+
+该示例项目展示了如何在实际应用中使用 fastapi-oauth20，包括：
+
+- 多个 OAuth2 提供商的集成示例
+- 完整的授权流程实现
+- 用户信息获取和处理
+- 错误处理最佳实践
+
 ## Sponsor
 
 如果这个项目对你有帮助，欢迎[请作者喝杯咖啡](https://wu-clan.github.io/sponsor/) ☕

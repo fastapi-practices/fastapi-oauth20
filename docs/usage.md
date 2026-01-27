@@ -4,6 +4,22 @@ from fastapi_oauth20 import FastAPIOAuth20
 
 本指南介绍如何将 FastAPI OAuth2.0 库与各种 OAuth2 提供程序一起使用。
 
+## 演示项目
+
+在开始之前，强烈推荐查看我们的完整演示项目
+
+**[fastapi-oauth20-demo](https://github.com/fastapi-practices/fastapi-oauth20-demo)**
+
+该演示项目包含：
+
+- 多个 OAuth2 提供商的集成示例
+- 详细的代码注释和实现说明
+- 生产环境的最佳实践
+- 错误处理示例
+- 可直接运行的完整应用
+
+通过演示项目，你可以快速了解如何在真实应用中使用 fastapi-oauth20
+
 ## 基本用法
 
 ### 1. 选择 OAuth2 提供商并初始化客户端

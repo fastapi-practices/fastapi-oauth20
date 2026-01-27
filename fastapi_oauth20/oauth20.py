@@ -43,6 +43,7 @@ class OAuth20Base:
         :param default_scopes: Default list of OAuth scopes to request if none are specified.
         :param token_endpoint_basic_auth: Whether to use HTTP Basic Authentication for token endpoint requests.
         :param revoke_token_endpoint_basic_auth: Whether to use HTTP Basic Authentication for revoke endpoint requests.
+        :return:
         """
         self.client_id = client_id
         self.client_secret = client_secret

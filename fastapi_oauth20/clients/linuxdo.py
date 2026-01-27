@@ -10,6 +10,7 @@ class LinuxDoOAuth20(OAuth20Base):
 
         :param client_id: Linux.do OAuth application client ID.
         :param client_secret: Linux.do OAuth application client secret.
+        :return:
         """
         super().__init__(
             client_id=client_id,

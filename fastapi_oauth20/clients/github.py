@@ -15,6 +15,7 @@ class GitHubOAuth20(OAuth20Base):
 
         :param client_id: GitHub OAuth App client ID.
         :param client_secret: GitHub OAuth App client secret.
+        :return:
         """
         super().__init__(
             client_id=client_id,
