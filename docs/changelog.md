@@ -1,3 +1,20 @@
+<a id="v0.0.3"></a>
+# [v0.0.3](https://github.com/fastapi-practices/fastapi-oauth20/releases/tag/v0.0.3) - 2026-01-27
+
+## What's Changed
+* Update changelog for v0.0.2 by [@wu-clan](https://github.com/wu-clan) in [#27](https://github.com/fastapi-practices/fastapi-oauth20/pull/27)
+* Add the codecov to test ci by [@wu-clan](https://github.com/wu-clan) in [#28](https://github.com/fastapi-practices/fastapi-oauth20/pull/28)
+* Add more user docs for feishu and Google by [@wu-clan](https://github.com/wu-clan) in [#29](https://github.com/fastapi-practices/fastapi-oauth20/pull/29)
+* Update coding styles in code and docs by [@wu-clan](https://github.com/wu-clan) in [#31](https://github.com/fastapi-practices/fastapi-oauth20/pull/31)
+* Add WeChat OAuth2 by [@wu-clan](https://github.com/wu-clan) in [#32](https://github.com/fastapi-practices/fastapi-oauth20/pull/32)
+* Prepare for 0.0.3 release by [@wu-clan](https://github.com/wu-clan) in [#35](https://github.com/fastapi-practices/fastapi-oauth20/pull/35)
+
+
+**Full Changelog**: https://github.com/fastapi-practices/fastapi-oauth20/compare/v0.0.2...v0.0.3
+
+[Changes][v0.0.3]
+
+
 <a id="v0.0.2"></a>
 # [v0.0.2](https://github.com/fastapi-practices/fastapi-oauth20/releases/tag/v0.0.2) - 2025-11-02
 
@@ -43,6 +60,7 @@
 [Changes][v0.0.1]
 
 
+[v0.0.3]: https://github.com/fastapi-practices/fastapi-oauth20/compare/v0.0.2...v0.0.3
 [v0.0.2]: https://github.com/fastapi-practices/fastapi-oauth20/compare/v0.0.1...v0.0.2
 [v0.0.1]: https://github.com/fastapi-practices/fastapi-oauth20/tree/v0.0.1
 
