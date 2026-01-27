@@ -9,4 +9,4 @@ from .clients.oschina import OSChinaOAuth20 as OSChinaOAuth20
 from .clients.weixin_mp import WeChatMpOAuth20 as WeChatMpOAuth20
 from .clients.weixin_open import WeChatOpenOAuth20 as WeChatOpenOAuth20
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
