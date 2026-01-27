@@ -38,6 +38,9 @@ def oauth_client():
     )
 
 
+# ==================== Initialization Tests ====================
+
+
 def test_oauth_base_initialization(oauth_client):
     """Test OAuth20Base initialization with all parameters."""
     assert oauth_client.client_id == 'test_client_id'
@@ -85,6 +88,39 @@ def test_oauth_base_initialization_with_basic_auth():
 
     assert client.token_endpoint_basic_auth is True
     assert client.revoke_token_endpoint_basic_auth is True
+
+
+def test_concrete_implementation():
+    """Test that OAuth20Base can be instantiated directly."""
+    client = OAuth20Base(
+        client_id='test',
+        client_secret='test',
+        authorize_endpoint='https://example.com/auth',
+        access_token_endpoint='https://example.com/token',
+        userinfo_endpoint='https://example.com/userinfo',
+    )
+
+    assert client.client_id == 'test'
+    assert client.client_secret == 'test'
+    assert client.userinfo_endpoint == 'https://example.com/userinfo'
+
+
+@pytest.mark.asyncio
+async def test_get_userinfo_implementation():
+    """Test that concrete implementation of get_userinfo works."""
+    client = MockOAuth20Client(
+        client_id='test',
+        client_secret='test',
+        authorize_endpoint='https://example.com/auth',
+        access_token_endpoint='https://example.com/token',
+        userinfo_endpoint='https://example.com/userinfo',
+    )
+
+    result = await client.get_userinfo('test_token')
+    assert result == {'user_id': 'test_user', 'access_token': 'test_token'}
+
+
+# ==================== Authorization URL Tests ====================
 
 
 @pytest.mark.asyncio
@@ -142,6 +178,9 @@ async def test_get_authorization_url_with_extra_params(oauth_client):
     assert 'prompt=consent' in url
 
 
+# ==================== Access Token Tests ====================
+
+
 @pytest.mark.asyncio
 @respx.mock
 async def test_get_access_token_success(oauth_client):
@@ -153,7 +192,6 @@ async def test_get_access_token_success(oauth_client):
         'refresh_token': 'refresh_token_123',
     }
 
-    # Mock the token endpoint
     respx.post('https://example.com/oauth/token').mock(return_value=httpx.Response(200, json=mock_token_data))
 
     result = await oauth_client.get_access_token(code='auth_code_123', redirect_uri='https://example.com/callback')
@@ -166,14 +204,12 @@ async def test_get_access_token_with_code_verifier(oauth_client):
     """Test access token exchange with PKCE code verifier."""
     mock_token_data = {'access_token': 'new_access_token'}
 
-    # Mock the token endpoint and capture the request
     route = respx.post('https://example.com/oauth/token').mock(return_value=httpx.Response(200, json=mock_token_data))
 
     await oauth_client.get_access_token(
         code='auth_code_123', redirect_uri='https://example.com/callback', code_verifier='verifier_123'
     )
 
-    # Verify the request was made with code_verifier
     assert route.called
     request_data = route.calls[0].request.content.decode()
     assert 'code_verifier=verifier_123' in request_data
@@ -194,16 +230,13 @@ async def test_get_access_token_with_basic_auth():
 
     mock_token_data = {'access_token': 'new_access_token'}
 
-    # Mock the token endpoint
     route = respx.post('https://example.com/token').mock(return_value=httpx.Response(200, json=mock_token_data))
 
     await client.get_access_token(code='auth_code_123', redirect_uri='https://example.com/callback')
 
-    # Verify BasicAuth was used
     assert route.called
     request = route.calls[0].request
     assert 'authorization' in request.headers
-    # Basic auth should be present
     assert request.headers['authorization'].startswith('Basic ')
 
 
@@ -211,11 +244,13 @@ async def test_get_access_token_with_basic_auth():
 @respx.mock
 async def test_get_access_token_http_error(oauth_client):
     """Test handling of HTTP errors during access token exchange."""
-    # Mock HTTP error response
     respx.post('https://example.com/oauth/token').mock(return_value=httpx.Response(400, text='Bad Request'))
 
     with pytest.raises(HTTPXOAuth20Error):
         await oauth_client.get_access_token(code='invalid_code', redirect_uri='https://example.com/callback')
+
+
+# ==================== Refresh Token Tests ====================
 
 
 @pytest.mark.asyncio
@@ -224,11 +259,36 @@ async def test_refresh_token_success(oauth_client):
     """Test successful token refresh."""
     mock_token_data = {'access_token': 'refreshed_access_token', 'token_type': 'Bearer', 'expires_in': 3600}
 
-    # Mock the refresh endpoint
     respx.post('https://example.com/oauth/refresh').mock(return_value=httpx.Response(200, json=mock_token_data))
 
     result = await oauth_client.refresh_token('refresh_token_123')
     assert result == mock_token_data
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_refresh_token_with_basic_auth():
+    """Test token refresh with HTTP Basic Authentication."""
+    client = MockOAuth20Client(
+        client_id='test_id',
+        client_secret='test_secret',
+        authorize_endpoint='https://example.com/auth',
+        access_token_endpoint='https://example.com/token',
+        userinfo_endpoint='https://example.com/userinfo',
+        refresh_token_endpoint='https://example.com/oauth/refresh',
+        token_endpoint_basic_auth=True,
+    )
+
+    mock_token_data = {'access_token': 'refreshed_access_token', 'token_type': 'Bearer', 'expires_in': 3600}
+
+    route = respx.post('https://example.com/oauth/refresh').mock(return_value=httpx.Response(200, json=mock_token_data))
+
+    await client.refresh_token('refresh_token_123')
+
+    assert route.called
+    request = route.calls[0].request
+    assert 'authorization' in request.headers
+    assert request.headers['authorization'].startswith('Basic ')
 
 
 @pytest.mark.asyncio
@@ -250,21 +310,21 @@ async def test_refresh_token_missing_endpoint():
 @respx.mock
 async def test_refresh_token_http_error(oauth_client):
     """Test handling of HTTP errors during token refresh."""
-    # Mock HTTP error response
     respx.post('https://example.com/oauth/refresh').mock(return_value=httpx.Response(401, text='Unauthorized'))
 
     with pytest.raises(HTTPXOAuth20Error):
         await oauth_client.refresh_token('invalid_refresh_token')
 
 
+# ==================== Revoke Token Tests ====================
+
+
 @pytest.mark.asyncio
 @respx.mock
 async def test_revoke_token_success(oauth_client):
     """Test successful token revocation."""
-    # Mock successful revocation response
     respx.post('https://example.com/oauth/revoke').mock(return_value=httpx.Response(200, text='OK'))
 
-    # Should not raise any exception for successful revocation
     await oauth_client.revoke_token('access_token_123')
 
 
@@ -272,15 +332,37 @@ async def test_revoke_token_success(oauth_client):
 @respx.mock
 async def test_revoke_token_with_type_hint(oauth_client):
     """Test token revocation with token type hint."""
-    # Mock the revoke endpoint and capture the request
     route = respx.post('https://example.com/oauth/revoke').mock(return_value=httpx.Response(200, text='OK'))
 
     await oauth_client.revoke_token(token='refresh_token_123', token_type_hint='refresh_token')
 
-    # Verify token_type_hint was included in the request
     assert route.called
     request_data = route.calls[0].request.content.decode()
     assert 'token_type_hint=refresh_token' in request_data
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_revoke_token_with_basic_auth():
+    """Test token revocation with HTTP Basic Authentication."""
+    client = MockOAuth20Client(
+        client_id='test_id',
+        client_secret='test_secret',
+        authorize_endpoint='https://example.com/auth',
+        access_token_endpoint='https://example.com/token',
+        userinfo_endpoint='https://example.com/userinfo',
+        revoke_token_endpoint='https://example.com/oauth/revoke',
+        revoke_token_endpoint_basic_auth=True,
+    )
+
+    route = respx.post('https://example.com/oauth/revoke').mock(return_value=httpx.Response(200, text='OK'))
+
+    await client.revoke_token('access_token_123')
+
+    assert route.called
+    request = route.calls[0].request
+    assert 'authorization' in request.headers
+    assert request.headers['authorization'].startswith('Basic ')
 
 
 @pytest.mark.asyncio
@@ -302,11 +384,13 @@ async def test_revoke_token_missing_endpoint():
 @respx.mock
 async def test_revoke_token_http_error(oauth_client):
     """Test handling of HTTP errors during token revocation."""
-    # Mock HTTP error response
     respx.post('https://example.com/oauth/revoke').mock(return_value=httpx.Response(400, text='Bad Request'))
 
     with pytest.raises(HTTPXOAuth20Error):
         await oauth_client.revoke_token('invalid_token')
+
+
+# ==================== Helper Method Tests ====================
 
 
 def test_raise_httpx_oauth20_errors_success():
@@ -314,7 +398,6 @@ def test_raise_httpx_oauth20_errors_success():
     mock_response = Mock()
     mock_response.raise_for_status.return_value = None
 
-    # Should not raise any exception
     OAuth20Base.raise_httpx_oauth20_errors(mock_response)
 
 
@@ -331,7 +414,6 @@ def test_raise_httpx_oauth20_errors_http_status_error():
 
 def test_raise_httpx_oauth20_errors_network_error():
     """Test handling of network errors."""
-    # Test with a mock response that will raise RequestError when raise_for_status is called
     mock_response = Mock()
     mock_response.raise_for_status.side_effect = httpx.RequestError('Network error')
 
@@ -355,33 +437,3 @@ def test_get_json_result_invalid_json():
 
     with pytest.raises(AccessTokenError, match='Result serialization failed'):
         OAuth20Base.get_json_result(mock_response, err_class=AccessTokenError)
-
-
-def test_concrete_implementation():
-    """Test that OAuth20Base can be instantiated directly."""
-    client = OAuth20Base(
-        client_id='test',
-        client_secret='test',
-        authorize_endpoint='https://example.com/auth',
-        access_token_endpoint='https://example.com/token',
-        userinfo_endpoint='https://example.com/userinfo',
-    )
-
-    assert client.client_id == 'test'
-    assert client.client_secret == 'test'
-    assert client.userinfo_endpoint == 'https://example.com/userinfo'
-
-
-@pytest.mark.asyncio
-async def test_get_userinfo_implementation():
-    """Test that concrete implementation of get_userinfo works."""
-    client = MockOAuth20Client(
-        client_id='test',
-        client_secret='test',
-        authorize_endpoint='https://example.com/auth',
-        access_token_endpoint='https://example.com/token',
-        userinfo_endpoint='https://example.com/userinfo',
-    )
-
-    result = await client.get_userinfo('test_token')
-    assert result == {'user_id': 'test_user', 'access_token': 'test_token'}

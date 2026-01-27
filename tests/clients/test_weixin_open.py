@@ -3,7 +3,7 @@ import pytest
 import respx
 
 from fastapi_oauth20 import WeChatOpenOAuth20
-from fastapi_oauth20.errors import GetUserInfoError, HTTPXOAuth20Error
+from fastapi_oauth20.errors import GetUserInfoError, HTTPXOAuth20Error, RefreshTokenError
 from fastapi_oauth20.oauth20 import OAuth20Base
 from tests.conftest import (
     INVALID_TOKEN,
@@ -25,8 +25,10 @@ def wechat_open_client():
 class TestWeChatOpenOAuth20:
     """Test WeChat Open OAuth2 client functionality."""
 
-    def test_wechat_open_client_initialization(self, wechat_open_client):
-        """Test WeChat Open client initialization with correct parameters."""
+    # ==================== Initialization Tests ====================
+
+    def test_client_initialization(self, wechat_open_client):
+        """Test client initialization with correct parameters."""
         assert wechat_open_client.client_id == TEST_CLIENT_ID
         assert wechat_open_client.client_secret == TEST_CLIENT_SECRET
         assert wechat_open_client.authorize_endpoint == 'https://open.weixin.qq.com/connect/qrconnect'
@@ -35,40 +37,31 @@ class TestWeChatOpenOAuth20:
         assert wechat_open_client.userinfo_endpoint == 'https://api.weixin.qq.com/sns/userinfo'
         assert wechat_open_client.default_scopes == ['snsapi_login']
 
-    def test_wechat_open_client_initialization_with_custom_credentials(self):
-        """Test WeChat Open client initialization with custom credentials."""
-        client = WeChatOpenOAuth20(client_id=TEST_CLIENT_ID, client_secret=TEST_CLIENT_SECRET)
-        assert client.client_id == TEST_CLIENT_ID
-        assert client.client_secret == TEST_CLIENT_SECRET
-
-    def test_wechat_open_client_inheritance(self, wechat_open_client):
-        """Test that WeChat Open client properly inherits from OAuth20Base."""
+    def test_client_inheritance(self, wechat_open_client):
+        """Test that client properly inherits from OAuth20Base."""
         assert isinstance(wechat_open_client, OAuth20Base)
 
-    def test_wechat_open_client_scopes_are_lists(self, wechat_open_client):
+    def test_client_scopes_are_lists(self, wechat_open_client):
         """Test that default scopes are properly configured as lists."""
         assert isinstance(wechat_open_client.default_scopes, list)
         assert len(wechat_open_client.default_scopes) == 1
         assert all(isinstance(scope, str) for scope in wechat_open_client.default_scopes)
 
-    def test_wechat_open_client_endpoint_urls(self):
-        """Test that WeChat Open client uses correct endpoint URLs."""
+    def test_client_endpoint_urls(self):
+        """Test that client uses correct endpoint URLs."""
         client = WeChatOpenOAuth20(TEST_CLIENT_ID, TEST_CLIENT_SECRET)
 
-        # Test that endpoints are correctly set
         assert client.authorize_endpoint.endswith('/connect/qrconnect')
         assert client.access_token_endpoint.endswith('/sns/oauth2/access_token')
         assert client.refresh_token_endpoint.endswith('/sns/oauth2/refresh_token')
         assert client.userinfo_endpoint.endswith('/sns/userinfo')
-
-        # Test that all endpoints use the correct domain
         assert 'open.weixin.qq.com' in client.authorize_endpoint
         assert 'api.weixin.qq.com' in client.access_token_endpoint
         assert 'api.weixin.qq.com' in client.refresh_token_endpoint
         assert 'api.weixin.qq.com' in client.userinfo_endpoint
 
-    def test_wechat_open_client_multiple_instances(self):
-        """Test that multiple WeChat Open client instances work independently."""
+    def test_client_multiple_instances(self):
+        """Test that multiple client instances work independently."""
         client1 = WeChatOpenOAuth20('client1', 'secret1')
         client2 = WeChatOpenOAuth20('client2', 'secret2')
 
@@ -77,9 +70,11 @@ class TestWeChatOpenOAuth20:
         assert client1.authorize_endpoint == client2.authorize_endpoint
         assert client1.access_token_endpoint == client2.access_token_endpoint
 
+    # ==================== Authorization URL Tests ====================
+
     @pytest.mark.asyncio
     async def test_get_authorization_url(self, wechat_open_client):
-        """Test WeChat Open authorization URL generation."""
+        """Test authorization URL generation."""
         redirect_uri = 'https://example.com/callback'
         state = 'test_state'
 
@@ -95,7 +90,7 @@ class TestWeChatOpenOAuth20:
 
     @pytest.mark.asyncio
     async def test_get_authorization_url_with_custom_scope(self, wechat_open_client):
-        """Test WeChat Open authorization URL with custom scope."""
+        """Test authorization URL with custom scope."""
         redirect_uri = 'https://example.com/callback'
         scope = ['snsapi_login']
 
@@ -104,63 +99,45 @@ class TestWeChatOpenOAuth20:
         assert 'scope=snsapi_login' in url
 
     @pytest.mark.asyncio
-    @respx.mock
-    async def test_get_userinfo_success(self, wechat_open_client):
-        """Test successful user info retrieval from WeChat Open API."""
-        mock_user_data = create_mock_user_data('wechat_open')
-        openid = 'test_openid'
+    async def test_get_authorization_url_with_lang_parameter(self, wechat_open_client):
+        """Test that authorization URL contains lang parameter."""
+        redirect_uri = 'https://example.com/callback'
+        state = 'test_state'
 
-        # Mock the userinfo endpoint with query parameters
-        respx.get(WECHAT_OPEN_USER_INFO_URL).mock(return_value=httpx.Response(200, json=mock_user_data))
+        url = await wechat_open_client.get_authorization_url(redirect_uri=redirect_uri, state=state)
 
-        result = await wechat_open_client.get_userinfo(TEST_ACCESS_TOKEN, openid=openid)
-        assert result == mock_user_data
+        assert 'lang=cn' in url
 
     @pytest.mark.asyncio
-    async def test_get_userinfo_without_openid(self, wechat_open_client):
-        """Test that get_userinfo raises error when openid is not provided."""
-        with pytest.raises(GetUserInfoError, match='openid is required'):
-            await wechat_open_client.get_userinfo(TEST_ACCESS_TOKEN)
+    async def test_get_authorization_url_query_parameters(self, wechat_open_client):
+        """Test that authorization URL contains correct query parameters."""
+        redirect_uri = 'https://example.com/callback'
+        state = 'test_state'
+
+        url = await wechat_open_client.get_authorization_url(redirect_uri=redirect_uri, state=state)
+
+        assert 'appid=' in url
+        assert 'redirect_uri=' in url
+        assert 'response_type=code' in url
+        assert 'scope=' in url
+        assert 'state=' in url
+        assert 'lang=' in url
 
     @pytest.mark.asyncio
-    @respx.mock
-    async def test_get_userinfo_http_error_401(self, wechat_open_client):
-        """Test handling of 401 HTTP error when getting user info."""
-        openid = 'test_openid'
-        respx.get(WECHAT_OPEN_USER_INFO_URL).mock(return_value=httpx.Response(401, text='Unauthorized'))
+    async def test_get_authorization_url_with_kwargs(self, wechat_open_client):
+        """Test authorization URL generation with extra kwargs parameters."""
+        redirect_uri = 'https://example.com/callback'
+        state = 'test_state'
 
-        with pytest.raises(HTTPXOAuth20Error):
-            await wechat_open_client.get_userinfo(INVALID_TOKEN, openid=openid)
+        url = await wechat_open_client.get_authorization_url(
+            redirect_uri=redirect_uri, state=state, extra_param='extra_value'
+        )
 
-    @pytest.mark.asyncio
-    @respx.mock
-    async def test_get_userinfo_http_error_403(self, wechat_open_client):
-        """Test handling of 403 HTTP error when getting user info."""
-        openid = 'test_openid'
-        respx.get(WECHAT_OPEN_USER_INFO_URL).mock(return_value=httpx.Response(403, text='Forbidden'))
+        assert 'open.weixin.qq.com/connect/qrconnect' in url
+        assert f'appid={TEST_CLIENT_ID}' in url
+        assert 'extra_param=extra_value' in url
 
-        with pytest.raises(HTTPXOAuth20Error):
-            await wechat_open_client.get_userinfo(TEST_ACCESS_TOKEN, openid=openid)
-
-    @pytest.mark.asyncio
-    @respx.mock
-    async def test_get_userinfo_http_error_500(self, wechat_open_client):
-        """Test handling of 500 HTTP error when getting user info."""
-        openid = 'test_openid'
-        respx.get(WECHAT_OPEN_USER_INFO_URL).mock(return_value=httpx.Response(500, text='Internal Server Error'))
-
-        with pytest.raises(HTTPXOAuth20Error):
-            await wechat_open_client.get_userinfo(TEST_ACCESS_TOKEN, openid=openid)
-
-    @pytest.mark.asyncio
-    @respx.mock
-    async def test_get_userinfo_invalid_json(self, wechat_open_client):
-        """Test handling of invalid JSON response."""
-        openid = 'test_openid'
-        respx.get(WECHAT_OPEN_USER_INFO_URL).mock(return_value=httpx.Response(200, text='invalid json'))
-
-        with pytest.raises(GetUserInfoError):
-            await wechat_open_client.get_userinfo(TEST_ACCESS_TOKEN, openid=openid)
+    # ==================== Access Token Tests ====================
 
     @pytest.mark.asyncio
     @respx.mock
@@ -187,6 +164,22 @@ class TestWeChatOpenOAuth20:
 
     @pytest.mark.asyncio
     @respx.mock
+    async def test_get_access_token_wechat_error_response(self, wechat_open_client):
+        """Test handling of WeChat API error response when getting access token."""
+        error_response = {'errcode': 40029, 'errmsg': 'invalid code'}
+
+        respx.get('https://api.weixin.qq.com/sns/oauth2/access_token').mock(
+            return_value=httpx.Response(200, json=error_response)
+        )
+
+        result = await wechat_open_client.get_access_token(code='invalid_code')
+        assert result == error_response
+        assert result['errcode'] == 40029
+
+    # ==================== Refresh Token Tests ====================
+
+    @pytest.mark.asyncio
+    @respx.mock
     async def test_refresh_token_success(self, wechat_open_client):
         """Test successful token refresh."""
         mock_token_data = {
@@ -206,60 +199,27 @@ class TestWeChatOpenOAuth20:
         assert result['access_token'] == 'new_access_token'
 
     @pytest.mark.asyncio
+    async def test_refresh_token_without_endpoint(self):
+        """Test that refresh_token raises error when refresh_token_endpoint is None."""
+        client = WeChatOpenOAuth20(client_id=TEST_CLIENT_ID, client_secret=TEST_CLIENT_SECRET)
+        client.refresh_token_endpoint = None
+
+        with pytest.raises(RefreshTokenError, match='The refresh token address is missing'):
+            await client.refresh_token(refresh_token='test_refresh_token')
+
+    # ==================== User Info Tests ====================
+
+    @pytest.mark.asyncio
     @respx.mock
-    async def test_get_userinfo_wechat_error_response(self, wechat_open_client):
-        """Test handling of WeChat API error response with errcode."""
+    async def test_get_userinfo_success(self, wechat_open_client):
+        """Test successful user info retrieval."""
+        mock_user_data = create_mock_user_data('wechat_open')
         openid = 'test_openid'
-        error_response = {'errcode': 40001, 'errmsg': 'invalid credential'}
 
-        respx.get(WECHAT_OPEN_USER_INFO_URL).mock(return_value=httpx.Response(200, json=error_response))
+        respx.get(WECHAT_OPEN_USER_INFO_URL).mock(return_value=httpx.Response(200, json=mock_user_data))
 
-        # WeChat returns 200 with error in body, should still work as valid JSON
         result = await wechat_open_client.get_userinfo(TEST_ACCESS_TOKEN, openid=openid)
-        assert result == error_response
-        assert result['errcode'] == 40001
-
-    @pytest.mark.asyncio
-    @respx.mock
-    async def test_get_access_token_wechat_error_response(self, wechat_open_client):
-        """Test handling of WeChat API error response when getting access token."""
-        error_response = {'errcode': 40029, 'errmsg': 'invalid code'}
-
-        respx.get('https://api.weixin.qq.com/sns/oauth2/access_token').mock(
-            return_value=httpx.Response(200, json=error_response)
-        )
-
-        # WeChat returns 200 with error in body
-        result = await wechat_open_client.get_access_token(code='invalid_code')
-        assert result == error_response
-        assert result['errcode'] == 40029
-
-    @pytest.mark.asyncio
-    async def test_get_authorization_url_with_lang_parameter(self, wechat_open_client):
-        """Test that authorization URL contains lang parameter."""
-        redirect_uri = 'https://example.com/callback'
-        state = 'test_state'
-
-        url = await wechat_open_client.get_authorization_url(redirect_uri=redirect_uri, state=state)
-
-        # Verify lang parameter is present (WeChat Open includes lang=cn by default)
-        assert 'lang=cn' in url
-
-    @pytest.mark.asyncio
-    async def test_get_authorization_url_query_parameters(self, wechat_open_client):
-        """Test that authorization URL contains correct query parameters."""
-        redirect_uri = 'https://example.com/callback'
-        state = 'test_state'
-
-        url = await wechat_open_client.get_authorization_url(redirect_uri=redirect_uri, state=state)
-
-        # Verify all required parameters are present
-        assert 'appid=' in url
-        assert 'redirect_uri=' in url
-        assert 'response_type=code' in url
-        assert 'scope=' in url
-        assert 'state=' in url
-        assert 'lang=' in url
+        assert result == mock_user_data
 
     @pytest.mark.asyncio
     @respx.mock
@@ -272,7 +232,67 @@ class TestWeChatOpenOAuth20:
 
         await wechat_open_client.get_userinfo(TEST_ACCESS_TOKEN, openid=openid)
 
-        # Verify the request was made with lang parameter
         assert route.called
         request = route.calls[0].request
         assert 'lang=zh_CN' in str(request.url)
+
+    @pytest.mark.asyncio
+    @respx.mock
+    async def test_get_userinfo_wechat_error_response(self, wechat_open_client):
+        """Test handling of WeChat API error response with errcode."""
+        openid = 'test_openid'
+        error_response = {'errcode': 40001, 'errmsg': 'invalid credential'}
+
+        respx.get(WECHAT_OPEN_USER_INFO_URL).mock(return_value=httpx.Response(200, json=error_response))
+
+        result = await wechat_open_client.get_userinfo(TEST_ACCESS_TOKEN, openid=openid)
+        assert result == error_response
+        assert result['errcode'] == 40001
+
+    @pytest.mark.asyncio
+    async def test_get_userinfo_without_openid(self, wechat_open_client):
+        """Test that get_userinfo raises error when openid is not provided."""
+        with pytest.raises(GetUserInfoError, match='openid is required'):
+            await wechat_open_client.get_userinfo(TEST_ACCESS_TOKEN)
+
+    @pytest.mark.asyncio
+    @respx.mock
+    async def test_get_userinfo_invalid_json(self, wechat_open_client):
+        """Test handling of invalid JSON response."""
+        openid = 'test_openid'
+        respx.get(WECHAT_OPEN_USER_INFO_URL).mock(return_value=httpx.Response(200, text='invalid json'))
+
+        with pytest.raises(GetUserInfoError):
+            await wechat_open_client.get_userinfo(TEST_ACCESS_TOKEN, openid=openid)
+
+    # ==================== HTTP Error Tests ====================
+
+    @pytest.mark.asyncio
+    @respx.mock
+    async def test_get_userinfo_http_error_401(self, wechat_open_client):
+        """Test handling of 401 HTTP error."""
+        openid = 'test_openid'
+        respx.get(WECHAT_OPEN_USER_INFO_URL).mock(return_value=httpx.Response(401, text='Unauthorized'))
+
+        with pytest.raises(HTTPXOAuth20Error):
+            await wechat_open_client.get_userinfo(INVALID_TOKEN, openid=openid)
+
+    @pytest.mark.asyncio
+    @respx.mock
+    async def test_get_userinfo_http_error_403(self, wechat_open_client):
+        """Test handling of 403 HTTP error."""
+        openid = 'test_openid'
+        respx.get(WECHAT_OPEN_USER_INFO_URL).mock(return_value=httpx.Response(403, text='Forbidden'))
+
+        with pytest.raises(HTTPXOAuth20Error):
+            await wechat_open_client.get_userinfo(TEST_ACCESS_TOKEN, openid=openid)
+
+    @pytest.mark.asyncio
+    @respx.mock
+    async def test_get_userinfo_http_error_500(self, wechat_open_client):
+        """Test handling of 500 HTTP error."""
+        openid = 'test_openid'
+        respx.get(WECHAT_OPEN_USER_INFO_URL).mock(return_value=httpx.Response(500, text='Internal Server Error'))
+
+        with pytest.raises(HTTPXOAuth20Error):
+            await wechat_open_client.get_userinfo(TEST_ACCESS_TOKEN, openid=openid)
