@@ -29,7 +29,3 @@ pip install fastapi_oauth20
 - 完整的授权流程实现
 - 用户信息获取和处理
 - 错误处理最佳实践
-
-## Sponsor
-
-如果这个项目对你有帮助，欢迎[请作者喝杯咖啡](https://wu-clan.github.io/sponsor/) ☕
