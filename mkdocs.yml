@@ -90,3 +90,6 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.tasklist:
       custom_checkbox: true
+
+copyright: |
+  &copy; 2026 FastAPI Practices
