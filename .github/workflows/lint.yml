@@ -29,5 +29,6 @@ jobs:
 
       - name: Run lint
         run: |
+          source .venv/bin/activate
           chmod 755 prek.sh
           ./prek.sh
