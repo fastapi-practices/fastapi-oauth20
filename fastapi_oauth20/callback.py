@@ -76,16 +76,16 @@ class FastAPIOAuth20:
                 detail=error if error is not None else None,
             )
 
-        kwargs = {'code': code}
+        kwargs: dict[str, str] = {'code': code}
 
         try:
             sig = inspect.signature(self.client.get_access_token)
             params = sig.parameters
 
-            if 'redirect_uri' in params:
+            if 'redirect_uri' in params and self.redirect_uri is not None:
                 kwargs['redirect_uri'] = self.redirect_uri
 
-            if 'code_verifier' in params:
+            if 'code_verifier' in params and code_verifier is not None:
                 kwargs['code_verifier'] = code_verifier
 
             access_token = await self.client.get_access_token(**kwargs)
