@@ -39,7 +39,7 @@ dev = [
     "ty>=0.0.1a23",
 ]
 lint = [
-    "pre-commit>=4.3.0",
+    "prek>=0.3.9",
 ]
 docs = [
     "mkdocs-material==9.6.7",
