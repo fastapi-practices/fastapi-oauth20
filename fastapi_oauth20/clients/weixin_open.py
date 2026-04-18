@@ -34,7 +34,7 @@ class WeChatOpenOAuth20(OAuth20Base):
         state: str | None = None,
         scope: list[str] | None = None,
         **kwargs,
-    ) -> str:
+    ) -> str:  # ty:ignore[invalid-method-override]
         """
         Generate WeChat Open Platform OAuth2 authorization URL.
 
@@ -58,7 +58,7 @@ class WeChatOpenOAuth20(OAuth20Base):
 
         return f'{self.authorize_endpoint}?{urlencode(params)}#wechat_redirect'
 
-    async def get_access_token(self, code: str) -> dict[str, Any]:
+    async def get_access_token(self, code: str) -> dict[str, Any]:  # ty:ignore[invalid-method-override]
         """
         Exchange authorization code for access token using WeChat's GET method.
 

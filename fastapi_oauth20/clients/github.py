@@ -1,4 +1,6 @@
-from typing import Any
+import json
+
+from typing import Any, cast
 
 import httpx
 
@@ -43,7 +45,11 @@ class GitHubOAuth20(OAuth20Base):
             if email is None:
                 response = await client.get(f'{self.userinfo_endpoint}/emails')
                 self.raise_httpx_oauth20_errors(response)
-                emails = self.get_json_result(response, err_class=GetUserInfoError)
+                try:
+                    emails = cast(list[dict[str, Any]], response.json())
+                except json.JSONDecodeError as e:
+                    raise GetUserInfoError('Result serialization failed.', response) from e
+
                 email = next((email['email'] for email in emails if email.get('primary')), emails[0]['email'])
                 result['email'] = email
 

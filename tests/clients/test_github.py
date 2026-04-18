@@ -73,6 +73,19 @@ class TestGitHubOAuth20:
 
     @pytest.mark.asyncio
     @respx.mock
+    async def test_get_userinfo_without_primary_email_uses_first_email(self, github_client):
+        mock_user_data = create_mock_user_data('github', email=None)
+        mock_user_info_response(respx, GITHUB_USER_INFO_URL, mock_user_data)
+        emails_data = [
+            {'email': 'fallback@example.com', 'primary': False},
+            {'email': 'secondary@example.com', 'primary': False},
+        ]
+        respx.get(GITHUB_EMAILS_URL).mock(return_value=httpx.Response(200, json=emails_data))
+        result = await github_client.get_userinfo(TEST_ACCESS_TOKEN)
+        assert result['email'] == 'fallback@example.com'
+
+    @pytest.mark.asyncio
+    @respx.mock
     async def test_get_userinfo_with_different_access_token(self, github_client):
         mock_user_data = create_mock_user_data('github', id=789, login='different_user')
         mock_user_info_response(respx, GITHUB_USER_INFO_URL, mock_user_data)
@@ -131,6 +144,15 @@ class TestGitHubOAuth20:
     @respx.mock
     async def test_get_userinfo_invalid_json(self, github_client):
         respx.get(GITHUB_USER_INFO_URL).mock(return_value=httpx.Response(200, text='invalid json'))
+        with pytest.raises(GetUserInfoError):
+            await github_client.get_userinfo(TEST_ACCESS_TOKEN)
+
+    @pytest.mark.asyncio
+    @respx.mock
+    async def test_get_userinfo_emails_invalid_json(self, github_client):
+        mock_user_data = create_mock_user_data('github', email=None)
+        mock_user_info_response(respx, GITHUB_USER_INFO_URL, mock_user_data)
+        respx.get(GITHUB_EMAILS_URL).mock(return_value=httpx.Response(200, text='invalid json'))
         with pytest.raises(GetUserInfoError):
             await github_client.get_userinfo(TEST_ACCESS_TOKEN)
 
