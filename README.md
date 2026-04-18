@@ -29,3 +29,11 @@ pip install fastapi_oauth20
 - 完整的授权流程实现
 - 用户信息获取和处理
 - 错误处理最佳实践
+
+## Development
+
+```shell
+uv sync
+uv run prek install
+uv run prek run --all-files --show-diff-on-failure
+```
