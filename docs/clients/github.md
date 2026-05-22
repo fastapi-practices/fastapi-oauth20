@@ -1,42 +1,39 @@
-## 注册账号
+# GitHub
 
-地址：[GitHub](https://github.com/)
+用于接入 GitHub OAuth App 登录。
 
-如果已有则忽略该步骤，直接进入第二步
+## 申请步骤
 
-## 创建第三方应用
+1. 登录 [GitHub](https://github.com/)，进入个人设置页。
 
-### 登录
+   ![settings.png](../public/images/github/settings.png)
 
-登录已注册的账号，通过主页右上角进入个人设置页
+2. 进入开发者设置。
 
-![settings.png](../public/images/github/settings.png)
+   ![dev.png](../public/images/github/dev.png)
 
-### 创建应用
+3. 创建 OAuth App。
 
-进入开发者界面
+   ![new.png](../public/images/github/new.png)
 
-![dev.png](../public/images/github/dev.png)
+4. 填写应用信息：
 
-创建 OAuth app
+   - `Application name`：应用名称
+   - `Homepage URL`：应用首页
+   - `Application description`：应用描述
+   - `Authorization callback URL`：授权回调地址，例如 `http://localhost:8000/auth/github/callback`
+   - `Enable Device Flow`：通常不需要勾选
 
-![new.png](../public/images/github/new.png)
+5. 提交创建。
 
-- `Application name` 填写自己的网站名称
-- `Homepage URL` 填写自己的网站首页地址
-- `Application description` 填写自己的应用描述
-- `Authorization callback URL` 用户授权后的跳转地址，通常情况下，开发者需要在此路由代码中实现用户注册、绑定等操作
-- `Enable Device Flow` 不需要勾选
+   ![save.png](../public/images/github/save.png)
 
-信息输入完成后，点击下方绿色的 ==`Register applaction`== 按钮创建应用
+6. 在应用详情页创建并记录密钥。
 
-![save.png](../public/images/github/save.png)
+   ![secrets.png](../public/images/github/secrets.png)
 
-### 创建密钥
+## 集成需要
 
-创建完成后，进入应用详情页
-
-![secrets.png](../public/images/github/secrets.png)
-
-记录 `Client ID`、`Client Secret`、`Authorization callback URL`，这三个东西在我们集成的时候都用得到，请妥善保管 `Client ID`
-和 `Client Secret`
+- `Client ID`
+- `Client Secret`
+- `Authorization callback URL`

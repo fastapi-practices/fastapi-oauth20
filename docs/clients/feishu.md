@@ -1,32 +1,32 @@
-## 注册账号
+# 飞书
 
-地址：[feishu](https://www.feishu.cn/accounts/page/ug_register)
+用于接入飞书开放平台 OAuth 登录。
 
-如果已有则忽略该步骤，直接进入第二步
+## 申请步骤
 
-## 创建第三方应用
+1. 注册或登录 [飞书](https://www.feishu.cn/accounts/page/ug_register)。
+2. 进入 [飞书开放平台](https://open.feishu.cn/) 控制台。
 
-### 登录
+   ![dev.png](../public/images/feishu/dev.png)
 
-登录[飞书开放平台](https://open.feishu.cn/)，通过主页右上角进入个人设置页
+3. 创建应用。
 
-![dev.png](../public/images/feishu/dev.png)
+   ![new.png](../public/images/feishu/new.png)
 
-### 创建应用
+4. 配置回调地址。
 
-![new.png](../public/images/feishu/new.png)
+   ![callback.png](../public/images/feishu/callback.png)
 
-配置回调地址
+5. 配置所需权限。
 
-![callback.png](../public/images/feishu/callback.png)
+   ![permission.png](../public/images/feishu/permission.png)
 
-配置应用权限
+6. 记录应用密钥。
 
-![permission.png](../public/images/feishu/permission.png)
+   ![secrets.png](../public/images/feishu/secrets.png)
 
-### 获取密钥
+## 集成需要
 
-![secrets.png](../public/images/feishu/secrets.png)
-
-记录 `Client ID`、`Client Secret`、`重定向 URL`，这三个东西在我们集成的时候都用得到，请妥善保管 `Client ID` 和
-`Client Secret`
+- `Client ID`
+- `Client Secret`
+- `重定向 URL`

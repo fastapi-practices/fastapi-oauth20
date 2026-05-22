@@ -1,11 +1,12 @@
-## 注册账号
+# 企业微信二维码登录
 
-地址：[work.weixin](https://work.weixin.qq.com/wework_admin/register_wx)
+企业微信二维码登录暂未整理完整接入步骤。
 
-如果已有则忽略该步骤，直接进入第二步
+## 入口
 
-## 创建第三方应用
+- 注册：[work.weixin](https://work.weixin.qq.com/wework_admin/register_wx)
+- 控制台：[work.weixin](https://work.weixin.qq.com/wework_admin/loginpage_wx?from=myhome_openApi)
 
-登录微信企业版控制台：[work.weixin](https://work.weixin.qq.com/wework_admin/loginpage_wx?from=myhome_openApi)
+## 状态
 
-...
+该客户端目前处于计划中。如你需要此能力，欢迎提交 Issue 或 PR。

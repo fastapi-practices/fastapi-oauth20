@@ -14,7 +14,6 @@ jobs:
     if: github.event.repository.fork == false
     steps:
       - uses: actions/checkout@v4
-
       - name: Configure Git Credentials
         run: |
           git config user.name github-actions[bot]
@@ -24,20 +23,20 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Set up Python
-        run: uv python install
+        run: uv python install 3.10
 
       - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
 
       - uses: actions/cache@v4
         with:
-          key: mkdocs-material-${{ env.cache_id }}
+          key: zensical-${{ env.cache_id }}
           path: .cache
           restore-keys: |
-            mkdocs-material-
+            zensical-
 
-      - run: sudo apt-get install pngquant
       - run: uv sync --group docs
-      - run: uv run mkdocs gh-deploy --force
+      - run: uv run zensical build -f zensical.toml --clean
+      - run: uv run ghp-import -n -p -f site
 
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
