@@ -315,7 +315,7 @@ def test_raise_httpx_oauth20_errors_success():
 def test_raise_httpx_oauth20_errors_http_status_error():
     mock_response = Mock()
     mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
-        'Not Found', request=None, response=mock_response
+        'Not Found', request=httpx.Request('GET', 'https://example.com'), response=mock_response
     )
     with pytest.raises(HTTPXOAuth20Error):
         OAuth20Base.raise_httpx_oauth20_errors(mock_response)

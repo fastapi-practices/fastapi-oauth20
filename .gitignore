@@ -7,6 +7,7 @@ venv/
 .vscode/
 .ruff_cache/
 dist/
+site/
 .claude/
 .coverage
 coverage.xml

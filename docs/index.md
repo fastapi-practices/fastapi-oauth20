@@ -1,18 +1,14 @@
 # FastAPI OAuth 2.0
 
-在 FastAPI 中异步授权 OAuth 2.0 客户端
+`fastapi-oauth20` 是一个面向 FastAPI 的异步 OAuth2 客户端库，用来完成第三方登录、授权回调、令牌刷新和用户信息获取。
 
-## Features
+## 适合谁
 
-- **异步支持** - 使用 async/await 构建以获得最佳性能
-- **令牌管理** - 内置令牌刷新和吊销
-- **FastAPI 集成** - 用于回调处理的无缝依赖注入
-- **类型安全** - 完整类型提示
-- **错误处理** - OAuth2 错误的综合异常层次结构
+- 想在 FastAPI 项目中接入 GitHub、Google、Gitee、飞书、微信等第三方登录
+- 希望用异步方式完成 OAuth2 请求
+- 希望把授权回调写成 FastAPI 依赖，少写重复代码
 
-## Quick Start
-
-### Installation
+## 快速安装
 
 === "pip"
 
@@ -26,41 +22,29 @@
     uv add fastapi-oauth20
     ```
 
-### Basic Usage
+## 最小示例
+
+下面示例创建 GitHub 客户端，并生成用户登录地址：
 
 ```python
-from typing import Annotated
-
-from fastapi import FastAPI, Depends
-from fastapi.responses import RedirectResponse
-
-from fastapi_oauth20 import GitHubOAuth20, FastAPIOAuth20
-
-app = FastAPI()
-
-redirect_uri = "http://localhost:8000/auth/github/callback"
+from fastapi_oauth20 import GitHubOAuth20
 
 github_client = GitHubOAuth20(
     client_id="your_github_client_id",
-    client_secret="your_github_client_secret"
+    client_secret="your_github_client_secret",
 )
 
 
-@app.get("/auth/github")
-async def github_auth():
-    auth_url = await github_client.get_authorization_url(redirect_uri=redirect_uri)
-    return RedirectResponse(url=auth_url)
-
-
-@app.get("/auth/github/callback")
-async def github_callback(
-        oauth2: Annotated[
-            FastAPIOAuth20,
-            Depends(FastAPIOAuth20(github_client, redirect_uri=redirect_uri)),
-        ],
-):
-    token_data, state = oauth2
-    access_token = token_data['access_token']
-    user_info = await github_client.get_userinfo(access_token)
-    return {"user": user_info}
+async def build_login_url() -> str:
+    return await github_client.get_authorization_url(
+        redirect_uri="http://localhost:8000/auth/github/callback",
+        state="random_state",
+    )
 ```
+
+## 下一步
+
+- [安装](install.md)：确认环境和安装命令
+- [用法](usage.md)：查看完整 FastAPI 登录流程
+- [名词解释](explanation.md)：了解 `client_id`、`redirect_uri`、`state` 等概念
+- [客户端状态](status.md)：查看当前支持的第三方平台

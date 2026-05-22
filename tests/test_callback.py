@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any
 
 import httpx
 import pytest
@@ -130,7 +130,7 @@ def setup_oauth_callback_route(app: FastAPI, provider_config: dict, oauth_depend
     @app.get(callback_path)
     async def oauth_callback_handler(
         access_token_state: Annotated[
-            FastAPIOAuth20,
+            tuple[dict[str, Any], str | None],
             Depends(oauth_dependency),
         ],
     ):
@@ -232,7 +232,7 @@ class TestFastAPIOAuth20Basic:
         @fastapi_app.get('/auth/github/callback')
         async def github_callback(
             access_token_state: Annotated[
-                FastAPIOAuth20,
+                tuple[dict[str, Any], str | None],
                 Depends(FastAPIOAuth20(github_client, redirect_uri=f'{LOCALHOST_URL}/auth/github/callback')),
             ],
         ):
@@ -267,7 +267,7 @@ class TestFastAPIOAuth20Basic:
         @fastapi_app.get('/auth/github/callback')
         async def github_callback(
             access_token_state: Annotated[
-                FastAPIOAuth20,
+                tuple[dict[str, Any], str | None],
                 Depends(FastAPIOAuth20(github_client, redirect_uri=f'{LOCALHOST_URL}/auth/github/callback')),
             ],
         ):
@@ -280,7 +280,7 @@ class TestFastAPIOAuth20Basic:
         @fastapi_app.get('/auth/google/callback')
         async def google_callback(
             access_token_state: Annotated[
-                FastAPIOAuth20,
+                tuple[dict[str, Any], str | None],
                 Depends(FastAPIOAuth20(google_client, redirect_uri=f'{LOCALHOST_URL}/auth/google/callback')),
             ],
         ):
@@ -433,7 +433,7 @@ class TestFastAPIOAuth20Integration:
         @app1.get('/auth/github/callback')
         async def github_callback1(
             access_token_state: Annotated[
-                FastAPIOAuth20,
+                tuple[dict[str, Any], str | None],
                 Depends(FastAPIOAuth20(github_client, redirect_uri=f'{LOCALHOST_URL}/app1/callback')),
             ],
         ):
@@ -443,7 +443,7 @@ class TestFastAPIOAuth20Integration:
         @app2.get('/auth/github/callback')
         async def github_callback2(
             access_token_state: Annotated[
-                FastAPIOAuth20,
+                tuple[dict[str, Any], str | None],
                 Depends(FastAPIOAuth20(github_client, redirect_uri=f'{LOCALHOST_URL}/app2/callback')),
             ],
         ):

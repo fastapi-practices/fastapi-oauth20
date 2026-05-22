@@ -1,29 +1,28 @@
-## 注册账号
+# 开源中国
 
-地址：[oschina](https://www.oschina.net/)
+用于接入 OSChina 第三方登录。
 
-如果已有则忽略该步骤，直接进入第二步
+## 申请步骤
 
-## 创建第三方应用
+1. 登录 [开源中国](https://www.oschina.net/)。
+2. 从页脚进入开放平台或文档入口。
 
-### 登录
+   ![settings.png](../public/images/oschina/settings.png)
 
-登录已注册的账号，通过页脚进入文档页
+3. 创建应用。
 
-![settings.png](../public/images/oschina/settings.png)
+   ![new.png](../public/images/oschina/new.png)
 
-### 创建应用
+4. 填写信息并确认添加。
 
-![new.png](../public/images/oschina/new.png)
+   ![save.png](../public/images/oschina/save.png)
 
-信息输入完成后，点击确认添加
+5. 创建完成后记录密钥。
 
-![save.png](../public/images/oschina/save.png)
+   ![secrets.png](../public/images/oschina/secrets.png)
 
-### 获取密钥
+## 集成需要
 
-创建完成后，页面将自动刷新并创建密钥
-
-![secrets.png](../public/images/oschina/secrets.png)
-
-记录 `应用ID`、`应用私钥`、`回调地址`，这三个东西在我们集成的时候都用得到，请妥善保管 应用ID 和 应用私钥
+- `应用 ID`
+- `应用私钥`
+- `回调地址`

@@ -1,33 +1,31 @@
-## 注册账号
+# LinuxDo
 
-地址：[LinuxDo](https://linux.do/)
+用于接入 LinuxDo Connect 登录。
 
-如果已有则忽略该步骤，直接进入第二步
+## 申请步骤
 
-## 创建第三方应用
+1. 登录 [LinuxDo](https://linux.do/)，从左侧进入 Connect 页面。
 
-### 登录
+   ![connect.png](../public/images/linuxdo/connect.png)
 
-登录已注册的账号，通过主页左侧 Connect 进入 connect 页面
+2. 进入开发者页面。
 
-![connect.png](../public/images/linuxdo/connect.png)
+   ![dev.png](../public/images/linuxdo/dev.png)
 
-### 创建应用
+3. 申请新接入。
 
-进入开发者界面
+   ![new.png](../public/images/linuxdo/new.png)
 
-![dev.png](../public/images/linuxdo/dev.png)
+4. 填写信息并保存。
 
-申请新接入
+   ![save.png](../public/images/linuxdo/save.png)
 
-![new.png](../public/images/linuxdo/new.png)
+5. 在应用详情页记录密钥。
 
-信息输入完成后，点击下方蓝色的 ==`保存`== 按钮创建应用
+   ![secrets.png](../public/images/linuxdo/secrets.png)
 
-![save.png](../public/images/linuxdo/save.png)
+## 集成需要
 
-创建完成后，进入应用详情页
-
-![secrets.png](../public/images/linuxdo/secrets.png)
-
-记录 `Client ID`、`Client Secret`、`回调地址`，这三个东西在我们集成的时候都用得到，请妥善保管 `Client ID` 和 `Client Secret`
+- `Client ID`
+- `Client Secret`
+- `回调地址`

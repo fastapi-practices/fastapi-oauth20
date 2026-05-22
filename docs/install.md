@@ -1,11 +1,11 @@
-## 依赖
+# 安装
 
-在安装 fastapi-oauth20 之前，请确保您满足以下先决条件：
+## 环境要求
 
-- **Python** 版本 >= 3.10
-- **FastAPI** 版本 >= 0.100.0
+- Python `>= 3.10`
+- FastAPI 项目环境
 
-## 安装
+## 安装命令
 
 === ":simple-python: pip"
 

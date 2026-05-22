@@ -1,0 +1,71 @@
+[project]
+site_name = "FastAPI OAuth 2.0"
+site_description = "在 FastAPI 中异步授权 OAuth 2.0 客户端"
+site_url = "https://wu-clan.github.io/fastapi-oauth20"
+site_author = "Wu Clan"
+repo_name = "fastapi-oauth20"
+repo_url = "https://github.com/wu-clan/fastapi-oauth20"
+copyright = """
+&copy; 2026 FastAPI Practices
+"""
+plugins = ["glightbox"]
+
+nav = [
+  { "主页" = "index.md" },
+  { "安装" = "install.md" },
+  { "名词解释" = "explanation.md" },
+  { "用法" = "usage.md" },
+  { "客户端状态" = "status.md" },
+  { "客户端申请" = [
+    { "GitHub" = "clients/github.md" },
+    { "Google" = "clients/google.md" },
+    { "LinuxDo" = "clients/linuxdo.md" },
+    { "Gitee" = "clients/gitee.md" },
+    { "开源中国" = "clients/oschina.md" },
+    { "微信小程序" = "clients/wechat_mp.md" },
+    { "微信开放平台" = "clients/wechat_open.md" },
+    { "企业微信二维码登录" = "clients/wechat_work.md" },
+    { "飞书" = "clients/feishu.md" },
+    { "钉钉" = "clients/dingtalk.md" },
+    { "QQ" = "clients/qq.md" },
+  ] },
+  { "变更日志" = "changelog.md" },
+]
+
+[project.theme]
+features = [
+  "content.code.annotate",
+  "content.code.select",
+  "navigation.instant",
+  "navigation.instant.progress",
+  "navigation.path",
+  "navigation.tracking",
+  "navigation.tabs.sticky",
+  "navigation.top",
+  "navigation.footer",
+  "search.suggest",
+  "toc.follow",
+]
+
+[project.theme.font]
+code = "Roboto Mono"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "pink"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "teal"
+toggle.icon = "lucide/moon-star"
+toggle.name = "Switch to system preference"
+

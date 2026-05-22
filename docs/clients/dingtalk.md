@@ -1,9 +1,11 @@
-## 注册账号
+# 钉钉
 
-地址：[dingtalk](https://n.dingtalk.com/dingding/h5-register/index.html#/)
+钉钉登录暂未整理完整接入步骤。
 
-如果已有则忽略该步骤，直接进入第二步
+## 入口
 
-## 创建第三方应用
+- 注册：[dingtalk](https://n.dingtalk.com/dingding/h5-register/index.html#/)
 
-登录已注册的账号...
+## 状态
+
+该客户端目前处于计划中。如你需要此能力，欢迎提交 Issue 或 PR。
