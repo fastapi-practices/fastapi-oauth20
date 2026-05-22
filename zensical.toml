@@ -68,4 +68,3 @@ scheme = "slate"
 primary = "teal"
 toggle.icon = "lucide/moon-star"
 toggle.name = "Switch to system preference"
-

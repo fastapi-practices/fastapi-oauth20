@@ -13,7 +13,6 @@ from fastapi.testclient import TestClient
 
 from fastapi_oauth20 import FastAPIOAuth20, GitHubOAuth20, GoogleOAuth20, OAuth20AuthorizeCallbackError
 
-
 FENCE_RE = re.compile(r'```(?P<lang>[^\n`]*)\n(?P<code>.*?)```', re.DOTALL)
 DOCS_DIR = Path(__file__).resolve().parents[1] / 'docs'
 SUPPORTED_EXAMPLE_LANGUAGES = {'bash', 'python', 'sh'}
