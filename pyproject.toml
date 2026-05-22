@@ -42,6 +42,7 @@ lint = [
     "prek>=0.4.1",
 ]
 docs = [
+    "ghp-import>=2.1.0",
     "zensical==0.0.43",
 ]
 
